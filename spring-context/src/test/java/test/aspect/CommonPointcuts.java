@@ -25,8 +25,6 @@ import org.aspectj.lang.annotation.Pointcut;
 public class CommonPointcuts {
 
 	@Pointcut("execution(* getAge())")
-	public void getAgeExecution() {
-
-	}
+	public void getAgeExecution() {}
 
 }
