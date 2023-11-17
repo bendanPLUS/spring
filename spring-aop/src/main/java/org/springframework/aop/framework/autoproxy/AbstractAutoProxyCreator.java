@@ -272,11 +272,11 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	@Override
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
 		Object cacheKey = getCacheKey(beanClass, beanName);
-
+		//决定是否要提前增强当前的bean
 		if (!StringUtils.hasLength(beanName) || !this.targetSourcedBeans.contains(beanName)) {
-			if (this.advisedBeans.containsKey(cacheKey)) {
+			if (this.advisedBeans.containsKey(cacheKey)) { //被增强的bean是不会再被增强的
 				return null;
-			}
+			} //基础类的bean不会被提前增强 被跳过的bean不会被提前增强
 			if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) {
 				this.advisedBeans.put(cacheKey, Boolean.FALSE);
 				return null;
@@ -286,7 +286,8 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		// Create proxy here if we have a custom TargetSource.
 		// Suppresses unnecessary default instantiation of the target bean:
 		// The TargetSource will handle target instances in a custom fashion.
-		TargetSource targetSource = getCustomTargetSource(beanClass, beanName);
+		TargetSource targetSource = getCustomTargetSource(beanClass, beanName); //原型bean额外处理targetSource
+		//单例的bean对象此处一定返回null (此处不是AOP 对代理对象进行增强的核心逻辑处)
 		if (targetSource != null) {
 			if (StringUtils.hasLength(beanName)) {
 				this.targetSourcedBeans.add(beanName);
@@ -312,6 +313,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 */
 	@Override
 	public Object postProcessAfterInitialization(@Nullable Object bean, String beanName) {
+
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
 			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
