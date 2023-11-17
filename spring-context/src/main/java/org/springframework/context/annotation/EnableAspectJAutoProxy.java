@@ -120,7 +120,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import(AspectJAutoProxyRegistrar.class)
-public @interface EnableAspectJAutoProxy {
+public @interface EnableAspectJAutoProxy { //该注解是启动AOP的开关
 
 	/**
 	 * Indicate whether subclass-based (CGLIB) proxies are to be created as opposed

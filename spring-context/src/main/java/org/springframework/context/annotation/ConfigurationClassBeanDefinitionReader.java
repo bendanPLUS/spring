@@ -145,7 +145,7 @@ class ConfigurationClassBeanDefinitionReader {
 		}
 
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
-		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
+		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars()); //P181 被@import导入的配置类注册到BeanDefinitionRegistrars
 	}
 
 	/**
