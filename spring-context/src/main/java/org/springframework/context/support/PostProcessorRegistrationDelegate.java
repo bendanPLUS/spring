@@ -258,7 +258,7 @@ final class PostProcessorRegistrationDelegate {
 		// Next, register the BeanPostProcessors that implement Ordered.
 		List<BeanPostProcessor> orderedPostProcessors = new ArrayList<>(orderedPostProcessorNames.size());
 		for (String ppName : orderedPostProcessorNames) {
-			BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
+			BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class); //
 			orderedPostProcessors.add(pp);
 			if (pp instanceof MergedBeanDefinitionPostProcessor) {
 				internalPostProcessors.add(pp);
