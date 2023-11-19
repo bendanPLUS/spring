@@ -118,7 +118,7 @@ class EnableAspectJAutoProxyTests {
 
 
 	@ComponentScan("example.scannable")
-	@EnableAspectJAutoProxy(proxyTargetClass = true) //强制开启 CGlib动态代理(即字面意思代理目标类而不是目标接口)
+	@EnableAspectJAutoProxy(proxyTargetClass = true) // 强制开启 CGlib动态代理(即字面意思代理目标类而不是目标接口)
 	static class ConfigWithCglibProxy {
 	}
 
