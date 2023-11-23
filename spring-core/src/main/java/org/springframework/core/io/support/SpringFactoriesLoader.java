@@ -93,15 +93,15 @@ public class SpringFactoriesLoader {
 
 	/**
 	 * The location to look for factories.
-	 * <p>Can be present in multiple JAR files.
-	 */
+	 * <p>Can be present in multiple JAR files. 多个文件;
+	 */                            /* SPI的文件名称必须是META-INF文件夹下的spring.factories */
 	public static final String FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories";
 
 	private static final FailureHandler THROWING_FAILURE_HANDLER = FailureHandler.throwing();
 
 	private static final Log logger = LogFactory.getLog(SpringFactoriesLoader.class);
 
-	static final Map<ClassLoader, Map<String, SpringFactoriesLoader>> cache = new ConcurrentReferenceHashMap<>();
+	static final Map<ClassLoader, Map<String, SpringFactoriesLoader>> cache = new ConcurrentReferenceHashMap<>(); //缓存 只有第一次加载时,把所有的spring.factories文件都加载+解析+存入缓存
 
 
 	@Nullable

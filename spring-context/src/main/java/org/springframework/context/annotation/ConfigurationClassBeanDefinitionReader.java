@@ -145,7 +145,7 @@ class ConfigurationClassBeanDefinitionReader {
 		}
 
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
-		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars()); //P181 被@import导入的配置类注册到BeanDefinitionRegistrars
+		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars()); //P181 184 如果配置类是ImportBeanDefinitionRegistrars类型则执行配置类重写的registerBeanDefinitions方法,完成BeanDefinition的注册
 	}
 
 	/**
