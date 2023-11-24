@@ -79,6 +79,7 @@ import org.springframework.context.ApplicationStartupAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ConfigurationClassEnhancer.EnhancedConfiguration;
+import org.springframework.context.support.PostProcessorRegistrationDelegate;
 import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -122,8 +123,8 @@ import org.springframework.util.CollectionUtils;
  * @author Juergen Hoeller
  * @author Phillip Webb
  * @author Sam Brannen
- * @since 3.0
- */
+ * @since 3.0                                 {@link PostProcessorRegistrationDelegate invokeBeanFactoryPostProcessors()方法}
+ */ /* 实现了PriorityOrdered接口 所以它的后置处理器方法执行优先级最高, 后置处理器相应方法执行顺序:顶级启动手写注入 -> PriorityOrdered -> Order -> 普通 */
 public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPostProcessor,
 		BeanRegistrationAotProcessor, BeanFactoryInitializationAotProcessor, PriorityOrdered,
 		ResourceLoaderAware, ApplicationStartupAware, BeanClassLoaderAware, EnvironmentAware {
