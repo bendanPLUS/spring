@@ -127,7 +127,7 @@ class ConfigurationClassBeanDefinitionReader {
 	 */
 	private void loadBeanDefinitionsForConfigurationClass(
 			ConfigurationClass configClass, TrackedConditionEvaluator trackedConditionEvaluator) {
-
+		//与条件装配有关的逻辑...
 		if (trackedConditionEvaluator.shouldSkip(configClass)) {
 			String beanName = configClass.getBeanName();
 			if (StringUtils.hasLength(beanName) && this.registry.containsBeanDefinition(beanName)) {
@@ -136,16 +136,26 @@ class ConfigurationClassBeanDefinitionReader {
 			this.importRegistry.removeImportingClass(configClass.getMetadata().getClassName());
 			return;
 		}
-
+		/** P181(1)注册配置类:如果当前类被@Import标注,则要把该类自身注册到 {@link DefaultListableBeanFactory#beanDefinitionMap}
+		 * {@link DefaultListableBeanFactory#registerBeanDefinition(String, BeanDefinition)}
+		 * */
 		if (configClass.isImported()) {
 			registerBeanDefinitionForImportedConfigurationClass(configClass);
 		}
+		// registry 当前类 所有的标记@@Bean的方法
 		for (BeanMethod beanMethod : configClass.getBeanMethods()) {
 			loadBeanDefinitionsForBeanMethod(beanMethod);
 		}
 
-		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
-		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars()); //P181 184 如果配置类是ImportBeanDefinitionRegistrars类型则执行配置类重写的registerBeanDefinitions方法,完成BeanDefinition的注册
+		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());//注册来自XML中的Bean
+		/**
+		 * 这里进行了统一处理
+		 * 1.先收集了所有 Implementation {@link ImportBeanDefinitionRegistrar}接口的类: {@link ConfigurationClassParser#processImports : {@link ConfigurationClass#addImportBeanDefinitionRegistrar} }
+		 * 2.在此处通过执行回调的方法{@link ImportBeanDefinitionRegistrar#registerBeanDefinitions(AnnotationMetadata, BeanDefinitionRegistry, BeanNameGenerator)} 注册BeanDefinition
+		 * 一个典型的案例就是: 开启AOP开关注解 {@link EnableAspectJAutoProxy @Import:{@link AspectJAutoProxyRegistrar#registerBeanDefinitions}}
+		 * TODO P181 184 如果配置类是ImportBeanDefinitionRegistrars类型则执行配置类重写的registerBeanDefinitions方法,完成BeanDefinition的注册
+		 */
+		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
 
 	/**
@@ -179,7 +189,7 @@ class ConfigurationClassBeanDefinitionReader {
 		MethodMetadata metadata = beanMethod.getMetadata();
 		String methodName = metadata.getMethodName();
 
-		// Do we need to mark the bean as skipped by its condition?
+		// Do we need to mark the bean as skipped by its condition?  如果是条件装配则将其跳过
 		if (this.conditionEvaluator.shouldSkip(metadata, ConfigurationPhase.REGISTER_BEAN)) {
 			configClass.skippedBeanMethods.add(methodName);
 			return;
@@ -209,11 +219,11 @@ class ConfigurationClassBeanDefinitionReader {
 			}
 			return;
 		}
-
+		//构造BeanDefinition
 		ConfigurationClassBeanDefinition beanDef = new ConfigurationClassBeanDefinition(configClass, metadata, beanName);
 		beanDef.setSource(this.sourceExtractor.extractSource(metadata, configClass.getResource()));
 
-		if (metadata.isStatic()) {
+		if (metadata.isStatic()) { //如果是静态方法
 			// static @Bean method
 			if (configClass.getMetadata() instanceof StandardAnnotationMetadata sam) {
 				beanDef.setBeanClass(sam.getIntrospectedClass());
@@ -224,7 +234,7 @@ class ConfigurationClassBeanDefinitionReader {
 			beanDef.setUniqueFactoryMethodName(methodName);
 		}
 		else {
-			// instance @Bean method
+			// instance @Bean method 实例@Bean方法
 			beanDef.setFactoryBeanName(configClass.getBeanName());
 			beanDef.setUniqueFactoryMethodName(methodName);
 		}
@@ -232,7 +242,7 @@ class ConfigurationClassBeanDefinitionReader {
 		if (metadata instanceof StandardMethodMetadata sam) {
 			beanDef.setResolvedFactoryMethod(sam.getIntrospectedMethod());
 		}
-
+		//处理Bean的属性+额外的注解
 		beanDef.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(beanDef, metadata);
 
@@ -274,6 +284,7 @@ class ConfigurationClassBeanDefinitionReader {
 			logger.trace(String.format("Registering bean definition for @Bean method %s.%s()",
 					configClass.getMetadata().getClassName(), beanName));
 		}
+		//注册到BeanDefinition Map
 		this.registry.registerBeanDefinition(beanName, beanDefToRegister);
 	}
 

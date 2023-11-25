@@ -179,7 +179,7 @@ public abstract class ConfigurationClassUtils {
 
 		// Any of the typical annotations found?
 		for (String indicator : candidateIndicators) {
-			if (metadata.isAnnotated(indicator)) {
+			if (metadata.isAnnotated(indicator)) { //@Component @ComponentScan @Import @ImportResource 就返回ture
 				return true;
 			}
 		}

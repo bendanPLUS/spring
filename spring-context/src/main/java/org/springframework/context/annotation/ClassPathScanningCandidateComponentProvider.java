@@ -314,7 +314,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 			return addCandidateComponentsFromIndex(this.componentsIndex, basePackage);
 		}
 		else {
-			return scanCandidateComponents(basePackage);
+			return scanCandidateComponents(basePackage); // 这里
 		}
 	}
 
@@ -419,9 +419,10 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		try {
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
 					resolveBasePackage(basePackage) + '/' + this.resourcePattern;
-			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
+			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath); //通过路径 拿到路径下所有的Class文件
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();
+			//对所有Class文件进行匹配 是否标注@Component注解
 			for (Resource resource : resources) {
 				String filename = resource.getFilename();
 				if (filename != null && filename.contains(ClassUtils.CGLIB_CLASS_SEPARATOR)) {

@@ -29,6 +29,8 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
  * @author Juergen Hoeller
  * @since 3.0.1
  * @see org.springframework.context.annotation.ConfigurationClassPostProcessor
+ * BeanDefinitionRegistryPostProcessor是BeanFactoryPostProcessor的后置处理器
+ * 要回调两个方法:1.自己的postProcessBeanDefinitionRegistry方法(此方法是为了注册BeanDefinition) 和 2.BeanFactoryPostProcessor的postProcessBeanFactory方法
  */
 public interface BeanDefinitionRegistryPostProcessor extends BeanFactoryPostProcessor {
 

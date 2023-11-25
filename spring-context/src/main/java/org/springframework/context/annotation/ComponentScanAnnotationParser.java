@@ -96,7 +96,7 @@ class ComponentScanAnnotationParser {
 			List<TypeFilter> typeFilters = TypeFilterUtils.createTypeFiltersFor(excludeFilterAttributes, this.environment,
 				this.resourceLoader, this.registry);
 			for (TypeFilter typeFilter : typeFilters) {
-				scanner.addExcludeFilter(typeFilter);
+				scanner.addExcludeFilter(typeFilter); //增加要排除解析达的class 例: @ComponentScan(excludeFilters = { @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),@ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
 			}
 		}
 
@@ -105,6 +105,7 @@ class ComponentScanAnnotationParser {
 			scanner.getBeanDefinitionDefaults().setLazyInit(true);
 		}
 
+		// 整理要扫描的包
 		Set<String> basePackages = new LinkedHashSet<>();
 		String[] basePackagesArray = componentScan.getStringArray("basePackages");
 		for (String pkg : basePackagesArray) {
@@ -116,6 +117,7 @@ class ComponentScanAnnotationParser {
 			basePackages.add(ClassUtils.getPackageName(clazz));
 		}
 		if (basePackages.isEmpty()) {
+			// 如果为空 默认当前包下目录下
 			basePackages.add(ClassUtils.getPackageName(declaringClass));
 		}
 
@@ -125,6 +127,7 @@ class ComponentScanAnnotationParser {
 				return declaringClass.equals(className);
 			}
 		});
+		/* 执行组件扫描动作  */
 		return scanner.doScan(StringUtils.toStringArray(basePackages));
 	}
 
