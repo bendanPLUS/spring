@@ -804,8 +804,11 @@ class ConfigurationClassParser {
 		}
 
 		/**
-		 * Return the imports defined by the group.
-		 * @return each import with its associated configuration class
+		 *  Return the imports defined by the group.
+		 *  @return each import with its associated configuration class
+		 * 自动装配调用时机:
+		 * this.group.process->{@link org.springframework.boot.autoconfigure.AutoConfigurationImportSelector.AutoConfigurationGroup#process}
+		 * this.group.selectImports()->{@link org.springframework.boot.autoconfigure.AutoConfigurationImportSelector.AutoConfigurationGroup#selectImports}
 		 */
 		public Iterable<Group.Entry> getImports() {
 			for (DeferredImportSelectorHolder deferredImport : this.deferredImports) {
