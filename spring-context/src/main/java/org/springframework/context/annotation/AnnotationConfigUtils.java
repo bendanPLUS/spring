@@ -16,22 +16,21 @@
 
 package org.springframework.context.annotation;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.event.DefaultEventListenerFactory;
 import org.springframework.context.event.EventListenerMethodProcessor;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.PostProcessorRegistrationDelegate;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.type.AnnotatedTypeMetadata;
@@ -162,6 +161,19 @@ public abstract class AnnotationConfigUtils {
 		Set<BeanDefinitionHolder> beanDefs = new LinkedHashSet<>(8);
 
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
+			/**
+			 * 注册到BeanDefinitionMap里的时机: {@link org.springframework.boot.SpringApplication#run(java.lang.String...)} -> context = createApplicationContext() ->{@link org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext#AnnotationConfigServletWebServerApplicationContext()} ->{@link AnnotationConfigUtils#registerAnnotationConfigProcessors(BeanDefinitionRegistry, Object)}
+			 * 注解驱动 用编码创建的factory后置处理器(ConfigurationClassPostProcessor) 放入BeanDefinitionMap中 等待被注册  备注:它实现了BeanDefinitionRegistryPostProcessor接口并且还实现了PriorityOrdered接口 是最好优先级要执行的后置处理器
+			 * 创建的时机:{@link PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory, List)} -> currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class))
+			 * 激活的时机: {@link PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory, List)} ->postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
+			 * 这是要在BeanDefinitionMAp里拿到所有 实现BeanDefinitionRegistryPostProcessor接口的类
+			 * 注:启动时 postProcessorNames数组中只有一个:ConfigurationClassPostProcessor
+			 * 之后就是执行它(ConfigurationClassPostProcessor)重写的{@link ConfigurationClassPostProcessor#postProcessBeanDefinitionRegistry(BeanDefinitionRegistry)}方法:
+			 * 1.该后置处理器的解析器(ConfigurationClassParser)的解析(parse)工作: {@link ConfigurationClassParser#parse(Set)}
+			 * 2.该后置处理器reader(ConfigurationClassBeanDefinitionReader)的加载(loadBeanDefinitions)工作: {@link ConfigurationClassBeanDefinitionReader#loadBeanDefinitions(Set)}
+			 * 使得所有的手动配置类(例:所有的@compent标注的Bean)全部加载到BeanDefinitionMAp里;
+			 */
+			//硬编码注册BeanDefinition->ConfigurationClassPostProcessor ->registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));

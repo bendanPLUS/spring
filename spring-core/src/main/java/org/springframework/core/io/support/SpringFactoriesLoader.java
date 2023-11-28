@@ -331,7 +331,7 @@ public class SpringFactoriesLoader {
 		 * @see #cache -> Map<ClassLoader, Map<String, SpringFactoriesLoader>>
 		 *     key:appClassLoader  value:( key:路径名称(例如:META_INF/spring.factories)  -> value:SpringFactoriesLoader
 		 *     @see SpringFactoriesLoader 里有一个factories属性(Map<String, List<String>> key:配置文件冒号前面的 value:一个list:配置文件冒号后面的逗号分隔))
-		 *     cache.computeIfAbsent 和 loaders.computeIfAbsent 好处就在于 缓存里如果已经有了 就不必再创建新的了 直接拿旧的value值
+		 *     cache.computeIfAbsent 和 loaders.computeIfAbsent 好处就在于:缓存没有就创建 有 则不创建 直接返回旧的value值
 		 */
 		Map<String, SpringFactoriesLoader> loaders = cache.computeIfAbsent(
 				resourceClassLoader, key -> new ConcurrentReferenceHashMap<>());
