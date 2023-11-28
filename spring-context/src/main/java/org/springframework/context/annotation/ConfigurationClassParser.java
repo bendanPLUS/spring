@@ -806,16 +806,17 @@ class ConfigurationClassParser {
 		/**
 		 *  Return the imports defined by the group.
 		 *  @return each import with its associated configuration class
+		 * 如果没有实现分组 就使用默认的分组{@link DefaultDeferredImportSelectorGroup}
 		 * 自动装配调用时机:
 		 * this.group.process->{@link org.springframework.boot.autoconfigure.AutoConfigurationImportSelector.AutoConfigurationGroup#process}
 		 * this.group.selectImports()->{@link org.springframework.boot.autoconfigure.AutoConfigurationImportSelector.AutoConfigurationGroup#selectImports}
 		 */
 		public Iterable<Group.Entry> getImports() {
 			for (DeferredImportSelectorHolder deferredImport : this.deferredImports) {
-				this.group.process(deferredImport.getConfigurationClass().getMetadata(),
+				this.group.process(deferredImport.getConfigurationClass().getMetadata(), //执行分组的process方法 如果没有实现分组 就使用默认的分组->DefaultDeferredImportSelectorGroup
 						deferredImport.getImportSelector()); //这里this.group.process
 			}
-			return this.group.selectImports();
+			return this.group.selectImports(); //执行分组的selectImports方法
 		}
 
 		public Predicate<String> getCandidateFilter() {
@@ -831,6 +832,10 @@ class ConfigurationClassParser {
 	}
 
 
+	/**
+	 * 如果实现DeferredImportSelector接口的类没有实现group 就为其创建默认的组DefaultDeferredImportSelectorGroup
+	 * 创建时机: {@link DeferredImportSelectorGroupingHandler#createGroup(Class)} ->effectiveType = (type != null ? type : DefaultDeferredImportSelectorGroup.class)
+	 */
 	private static class DefaultDeferredImportSelectorGroup implements Group {
 
 		private final List<Entry> imports = new ArrayList<>();
@@ -838,13 +843,13 @@ class ConfigurationClassParser {
 		@Override
 		public void process(AnnotationMetadata metadata, DeferredImportSelector selector) {
 			for (String importClassName : selector.selectImports(metadata)) { //这里调用重写的selector.selectImports方法返回Bean
-				this.imports.add(new Entry(metadata, importClassName));
+				this.imports.add(new Entry(metadata, importClassName)); //加入到imports集合
 			}
 		}
 
 		@Override
 		public Iterable<Entry> selectImports() {
-			return this.imports;
+			return this.imports; //返回 process方法加入的imports集合
 		}
 	}
 
