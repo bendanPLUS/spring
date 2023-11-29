@@ -40,6 +40,7 @@ import org.springframework.util.StringValueResolver;
  * @author Juergen Hoeller
  * @author Qimiao Chen
  * @since 2.5.2
+ *  别名注册表 AliasRegistry
  */
 public class SimpleAliasRegistry implements AliasRegistry {
 
