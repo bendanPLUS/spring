@@ -187,7 +187,7 @@ class ConfigurationClassParser {
 		 * deferredImportSelector: 先收集然后在此处同一分组处理
 		 * 1.同一收集: this.deferredImportSelectorHandler.handle(configClass, deferredImportSelector)
 		 * 2.同一分组处理: 此处
-		 * 处理时机(解配置类全部解析完成后, 目的是为了配合条件装配@Conditional)
+		 * 处理时机(解配置类全部解析完成后, 目的是为了配合条件装配@Conditional) TODO 条件装配判断的入口:{@link ConfigurationClassParser#processConfigurationClass(ConfigurationClass, Predicate)} -> this.conditionEvaluator.shouldSkip
 		 * 执行回调方法时机:{@link DeferredImportSelectorGrouping#getImports()}
 		 *
 		 * ImportBeanDefinitionRegistry(在解析完成之后(parser.parse(candidates)) -> this.reader.loadBeanDefinitions(configClasses)里)
@@ -232,6 +232,7 @@ class ConfigurationClassParser {
 	}
 
 	protected void processConfigurationClass(ConfigurationClass configClass, Predicate<String> filter) throws IOException {
+		//条件装配的判断
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
 			return;
 		}
