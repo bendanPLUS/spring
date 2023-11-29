@@ -178,7 +178,23 @@ class ConfigurationClassParser {
 						"Failed to parse configuration class [" + bd.getBeanClassName() + "]", ex);
 			}
 		}
-		//回调特殊的ImportSelector TODO deferredImportSelector处理的时机最晚(会在解析工作全部完成才执行)
+		/**
+		 * 执行时机的先后顺序: ImportSelector < deferredImportSelector < ImportBeanDefinitionRegistry
+		 *
+		 * ImportSelector():String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
+		 * {@link ConfigurationClassParser#processImports(ConfigurationClass, SourceClass, Collection, Predicate, boolean)}
+		 *
+		 * deferredImportSelector: 先收集然后在此处同一分组处理
+		 * 1.同一收集: this.deferredImportSelectorHandler.handle(configClass, deferredImportSelector)
+		 * 2.同一分组处理: 此处
+		 * 处理时机(解配置类全部解析完成后, 目的是为了配合条件装配@Conditional)
+		 * 执行回调方法时机:{@link DeferredImportSelectorGrouping#getImports()}
+		 *
+		 * ImportBeanDefinitionRegistry(在解析完成之后(parser.parse(candidates)) -> this.reader.loadBeanDefinitions(configClasses)里)
+		 * 也是先收集 再集中执行:
+		 * 1.收集工作执行时机: {@link ConfigurationClassParser#processImports(ConfigurationClass, SourceClass, Collection, Predicate, boolean)} -> configClass.addImportBeanDefinitionRegistrar
+		 * 2.同一执行回调方法时机(registrar.registerBeanDefinitions): {@link ConfigurationClassBeanDefinitionReader#loadBeanDefinitionsFromRegistrars(Map)}
+		 */
 		this.deferredImportSelectorHandler.process();
 	}
 
