@@ -47,21 +47,7 @@ import jakarta.inject.Provider;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.TypeConverter;
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanCurrentlyInCreationException;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
-import org.springframework.beans.factory.CannotLoadBeanClassException;
-import org.springframework.beans.factory.InjectionPoint;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
-import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.SmartFactoryBean;
-import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -961,15 +947,32 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		// Trigger initialization of all non-lazy singleton beans...
 		for (String beanName : beanNames) {
+			//  先合并BeanDefinition
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+			//不是抽象的 不是延时的  单例Bean进行getBean初始化
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
+				/**
+				 * 通过传入的name来确定createBean的对象
+				 * 判断时机:{@link AbstractBeanFactory#getObjectForBeanInstance(Object, String, String, RootBeanDefinition)}
+				 * 拿接口FactoryBean实现的Bean时机:{@link FactoryBeanRegistrySupport#doGetObjectFromFactoryBean(FactoryBean, String)}
+				 */
+				//1.工厂Bean
+				// 这里主要是通过beanDefinition中的信息，判断一下是否是factoryBean
+				// 如果是factoryBean，将会在beanName前面加上一个&符合再调用getBean
+				// 也就是说这个getBean是不会初始化实例的 而是他的factoryBean
 				if (isFactoryBean(beanName)) {
+					// 拿到bean的实例之后，就可以通过bean实例使用instanceof进行二次确认了
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
+					// 可以看到这里出现了一个SmartFactoryBean接口，且有一个isEagerInit方法
+					// 如果isEagerInit方法返回true，spring就认为这个subBean是需要提前初始化
 					if (bean instanceof SmartFactoryBean<?> smartFactoryBean && smartFactoryBean.isEagerInit()) {
+						// 这个时候使用原始的beanName再调用一次getBean
+						// 这里就会触发subBean的初始化流程了
 						getBean(beanName);
 					}
 				}
 				else {
+					//2.普通的bean直接走这里
 					getBean(beanName);
 				}
 			}

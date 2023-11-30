@@ -1,4 +1,4 @@
-package org.springframework;
+package org.springframework.ztest;
 
 public class User {
 	User() {
