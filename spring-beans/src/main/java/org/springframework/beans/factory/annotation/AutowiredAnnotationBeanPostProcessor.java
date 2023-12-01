@@ -180,6 +180,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	 * <p>Also supports the common {@link jakarta.inject.Inject @Inject} annotation,
 	 * if available, as well as the original {@code javax.inject.Inject} variant.
 	 */
+	//创建构造方法时就已经将@Autowired @Value类型加入 还有@Inject注解
 	@SuppressWarnings("unchecked")
 	public AutowiredAnnotationBeanPostProcessor() {
 		this.autowiredAnnotationTypes.add(Autowired.class);
@@ -309,6 +310,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	}
 
 	private InjectionMetadata findInjectionMetadata(String beanName, Class<?> beanType, RootBeanDefinition beanDefinition) {
+		//默认支持@Autowired @Value @Inject注解, 看无参的够着函数
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, beanType, null);
 		metadata.checkConfigMembers(beanDefinition);
 		return metadata;
@@ -476,6 +478,15 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		}
 	}
 
+	/**
+	 * 关于PropertyValues解释说明:
+	 * https://blog.csdn.net/qq_35971258/article/details/128287580
+	 * https://blog.csdn.net/qq_35971258/article/details/128365206
+	 * PropertyValues pvs 这里有值是因为 在beanDefinition时就被设置的值 (通过构造函数 or set方法)
+	 * 示例 :
+	 * {@link org.mybatis.spring.mapper.ClassPathMapperScanner#processBeanDefinitions}
+	 * definition.getPropertyValues().add 进行了属性的添加
+	 */
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
