@@ -266,14 +266,16 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 		do {
 			final List<LifecycleMethod> currInitMethods = new ArrayList<>();
 			final List<LifecycleMethod> currDestroyMethods = new ArrayList<>();
-
+			//方法 上标注注解的情况
 			ReflectionUtils.doWithLocalMethods(currentClass, method -> {
+				//setInitAnnotationType(PostConstruct.class);  处理@PostConstruct注解
 				if (this.initAnnotationType != null && method.isAnnotationPresent(this.initAnnotationType)) {
 					currInitMethods.add(new LifecycleMethod(method, beanClass));
 					if (logger.isTraceEnabled()) {
 						logger.trace("Found init method on class [" + beanClass.getName() + "]: " + method);
 					}
 				}
+				//setDestroyAnnotationType(PreDestroy.class); 标注@PreDestroy的方法
 				if (this.destroyAnnotationType != null && method.isAnnotationPresent(this.destroyAnnotationType)) {
 					currDestroyMethods.add(new LifecycleMethod(method, beanClass));
 					if (logger.isTraceEnabled()) {

@@ -274,7 +274,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		this.beanFactory = clbf;
 	}
 
-
+	// 时机:创建bean实例之后,属性注入之前; 先进行进行收集 @Autowired @Value @Inject注解
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
 		findInjectionMetadata(beanName, beanType, beanDefinition);
@@ -485,12 +485,14 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	 * PropertyValues pvs 这里有值是因为 在beanDefinition时就被设置的值 (通过构造函数 or set方法)
 	 * 示例 :
 	 * {@link org.mybatis.spring.mapper.ClassPathMapperScanner#processBeanDefinitions}
-	 * definition.getPropertyValues().add 进行了属性的添加
+	 * definition.getPropertyValues().add 进行了属性的注入
 	 */
+	//属性的注入 依赖注入
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
+			//通过反射 进行 依赖注入
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (BeanCreationException ex) {
@@ -702,9 +704,11 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				}
 			}
 			else {
+				// 获取属性值
 				value = resolveFieldValue(field, bean, beanName);
 			}
 			if (value != null) {
+				// 通过反射赋值
 				ReflectionUtils.makeAccessible(field);
 				field.set(bean, value);
 			}
