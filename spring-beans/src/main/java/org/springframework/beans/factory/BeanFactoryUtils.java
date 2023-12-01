@@ -84,6 +84,7 @@ public abstract class BeanFactoryUtils {
 			return name;
 		}
 		return transformedBeanNameCache.computeIfAbsent(name, beanName -> {
+			//循环 去掉字符串前面所有的"&"
 			do {
 				beanName = beanName.substring(BeanFactory.FACTORY_BEAN_PREFIX.length());
 			}

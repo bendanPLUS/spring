@@ -186,6 +186,9 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 		return mergedNames.distinct().toArray(String[]::new);
 	}
 
+	/**
+	 * 回调所有标记为@PostConstruct注解的方法
+	 */
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());

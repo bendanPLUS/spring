@@ -215,7 +215,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Assert.notNull(beanName, "Bean name must not be null");
 		synchronized (this.singletonObjects) {
 			// 加锁以后再一次判断缓存中是否有单例Bean
-			Object singletonObject = this.singletonObjects.get(beanName);
+			Object singletonObject = this.singletonObjects.get(beanName);//一级缓存
 			if (singletonObject == null) {
 				if (this.singletonsCurrentlyInDestruction) {
 					throw new BeanCreationNotAllowedException(beanName,
@@ -233,7 +233,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
-					singletonObject = singletonFactory.getObject();
+					singletonObject = singletonFactory.getObject();//函数式接口 -> 调用createBean(beanName, mbd, args);
 					newSingleton = true;
 				}
 				catch (IllegalStateException ex) {
@@ -258,7 +258,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					}
 					afterSingletonCreation(beanName);
 				}
-				//单例模式创建的Bean 加入缓存
+				//单例模式创建的Bean 加入三级缓存
 				if (newSingleton) {
 					addSingleton(beanName, singletonObject);
 				}

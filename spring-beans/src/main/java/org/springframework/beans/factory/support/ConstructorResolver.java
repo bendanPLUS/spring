@@ -187,6 +187,7 @@ class ConstructorResolver {
 				Constructor<?> uniqueCandidate = candidates[0];
 				if (uniqueCandidate.getParameterCount() == 0) {
 					synchronized (mbd.constructorArgumentLock) {
+						// 缓存构造函数
 						mbd.resolvedConstructorOrFactoryMethod = uniqueCandidate;
 						mbd.constructorArgumentsResolved = true;
 						mbd.resolvedConstructorArguments = EMPTY_ARGS;

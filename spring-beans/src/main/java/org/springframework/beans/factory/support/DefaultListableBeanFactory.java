@@ -956,11 +956,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				 * 判断时机:{@link AbstractBeanFactory#getObjectForBeanInstance(Object, String, String, RootBeanDefinition)}
 				 * 拿接口FactoryBean实现的Bean时机:{@link FactoryBeanRegistrySupport#doGetObjectFromFactoryBean(FactoryBean, String)}
 				 */
-				//1.工厂Bean
+				// 1.工厂Bean
 				// 这里主要是通过beanDefinition中的信息，判断一下是否是factoryBean
 				// 如果是factoryBean，将会在beanName前面加上一个&符合再调用getBean
 				// 也就是说这个getBean是不会初始化实例的 而是他的factoryBean
 				if (isFactoryBean(beanName)) {
+					/* FactoryBean类型默认不立即初始化,除非指定isEagerInit=true (例:所有的Mappeer接口) */
 					// 拿到bean的实例之后，就可以通过bean实例使用instanceof进行二次确认了
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
 					// 可以看到这里出现了一个SmartFactoryBean接口，且有一个isEagerInit方法
@@ -977,7 +978,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 		}
-
+		/* 给所有对象 提供一个统一回调的时机 */
+		//此时bean对象已经创建完成 如果有实现SmartInitializingSingleton接口的类 执行afterSingletonsInstantiated()方法
 		// Trigger post-initialization callback for all applicable beans...
 		for (String beanName : beanNames) {
 			Object singletonInstance = getSingleton(beanName);
