@@ -15,16 +15,27 @@ import java.util.stream.Stream;
 public class Main {
 
 	public static void main(String[] args) {
-		ApplicationContext ctx = new AnnotationConfigApplicationContext("org.springframework.ztest");
-		//test();
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext("org.springframework.ztest");
+		Stream.of(ctx.getBeanFactory().getBeanDefinitionNames()).forEach(System.out::println);
+		//testTestAlisaTransformedBeanName(ctx);
+		//test(ctx);
 	}
 
-	public static void testTestAlisaTransformedBeanName() {
+	public static void testTestAlisaTransformedBeanName(AnnotationConfigApplicationContext ctx) {
 		System.out.println("Hello world!");
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+
 		new AnnotatedBeanDefinitionReader(ctx).register(TestAlisaTransformedBeanName.class);
 		ctx.refresh();
 		Stream.of(ctx.getBeanFactory().getBeanDefinitionNames()).forEach(System.out::println);
+	}
+
+	public static void test(AnnotationConfigApplicationContext ctx) {
+		AnnotatedBeanDefinitionReader annotatedBeanDefinitionReader = new AnnotatedBeanDefinitionReader(ctx);
+		annotatedBeanDefinitionReader.register(FactoryBeanDemo.class);
+		annotatedBeanDefinitionReader.register(SubBean.class);
+		ctx.refresh();
+		Object subBean = ctx.getBean("factoryBeanDemo");
+		System.out.println(subBean);
 	}
 
 	//为了别名的解析测试
@@ -49,13 +60,5 @@ public class Main {
 		}
 	}
 
-	public static void test() {
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		AnnotatedBeanDefinitionReader annotatedBeanDefinitionReader = new AnnotatedBeanDefinitionReader(ctx);
-		annotatedBeanDefinitionReader.register(FactoryBeanDemo.class);
-		annotatedBeanDefinitionReader.register(SubBean.class);
-		ctx.refresh();
-		Object subBean = ctx.getBean("factoryBeanDemo");
-		System.out.println(subBean);
-	}
+
 }
