@@ -82,13 +82,14 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	 */
 	public List<Advisor> buildAspectJAdvisors() {
 		List<String> aspectNames = this.aspectBeanNames;
-
+		// 双重检验锁 spectBeanNames加到缓存里, 只有第一次进行逻辑处理 以后都是 从缓存里取
 		if (aspectNames == null) {
-			synchronized (this) {
+			synchronized (this) { //加锁
 				aspectNames = this.aspectBeanNames;
 				if (aspectNames == null) {
 					List<Advisor> advisors = new ArrayList<>();
 					aspectNames = new ArrayList<>();
+					// 通过类型拿beanNames ,传入的是Object类型 = 拿工厂里所有的bean
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 							this.beanFactory, Object.class, true, false);
 					for (String beanName : beanNames) {
@@ -97,19 +98,24 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 						}
 						// We must be careful not to instantiate beans eagerly as in this case they
 						// would be cached by the Spring container but would not have been weaved.
+						//  那beanName对用的类型
 						Class<?> beanType = this.beanFactory.getType(beanName, false);
 						if (beanType == null) {
 							continue;
 						}
-						if (this.advisorFactory.isAspect(beanType)) { //判断一个Class是否是通知类(1.是否有@Aspect注解标记 + 2.是否被ajc编译)
+						//判断一个Class是否是通知类(1.是否有@Aspect注解标记 + 2.是否被ajc编译)
+						//也可以叫 切面类
+						if (this.advisorFactory.isAspect(beanType)) {
 							aspectNames.add(beanName);
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
+							// 单例的切面类
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
+								//解析AspectJ切面类中的通知方法
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
 								if (this.beanFactory.isSingleton(beanName)) {
-									this.advisorsCache.put(beanName, classAdvisors);
+									this.advisorsCache.put(beanName, classAdvisors);  // 加入缓存
 								}
 								else {
 									this.aspectFactoryCache.put(beanName, factory);
@@ -117,6 +123,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 								advisors.addAll(classAdvisors);
 							}
 							else {
+								// 原型切面Bean的处理
 								// Per target or per this.
 								if (this.beanFactory.isSingleton(beanName)) {
 									throw new IllegalArgumentException("Bean with name '" + beanName +
@@ -129,8 +136,8 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 							}
 						}
 					}
-					this.aspectBeanNames = aspectNames;
-					return advisors;
+					this.aspectBeanNames = aspectNames; // 加入缓存
+					return advisors; // 第一次直接返回
 				}
 			}
 		}
@@ -138,6 +145,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 		if (aspectNames.isEmpty()) {
 			return Collections.emptyList();
 		}
+		// 除了第一次以外 以后都是从缓存里取
 		List<Advisor> advisors = new ArrayList<>();
 		for (String aspectName : aspectNames) {
 			List<Advisor> cachedAdvisors = this.advisorsCache.get(aspectName);

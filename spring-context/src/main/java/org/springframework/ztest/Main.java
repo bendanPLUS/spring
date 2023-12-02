@@ -13,7 +13,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext("org.springframework.ztest");
-		//Stream.of(ctx.getBeanFactory().getBeanDefinitionNames()).forEach(System.out::println);
+		Stream.of(ctx.getBeanFactory().getBeanDefinitionNames()).forEach(System.out::println);
 
 		//testTestAlisaTransformedBeanName(ctx);
 		//test(ctx);

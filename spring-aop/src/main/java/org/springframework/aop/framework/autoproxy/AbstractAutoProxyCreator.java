@@ -272,14 +272,21 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return wrapIfNecessary(bean, beanName, cacheKey); //如果有必要?则创建代理对象
 	}
 
+	/***
+	 * 回调方法执行的时机:
+	 * {@link  org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#createBean(String, org.springframework.beans.factory.support.RootBeanDefinition, Object[])}
+	 * {@link org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#resolveBeforeInstantiation(String, org.springframework.beans.factory.support.RootBeanDefinition)}
+	 * {@link org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#applyBeanPostProcessorsBeforeInstantiation(Class, String)}
+	 */
+
 	@Override
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
 		Object cacheKey = getCacheKey(beanClass, beanName);
-		//决定是否要提前增强当前的bean
+		//决定是否要提前增强当前的bean?
 		if (!StringUtils.hasLength(beanName) || !this.targetSourcedBeans.contains(beanName)) {
-			if (this.advisedBeans.containsKey(cacheKey)) { //被增强的bean是不会再被增强的
+			if (this.advisedBeans.containsKey(cacheKey)) { //被增强的bean是不会再次被增强的 缓存里有说明已经创建了该代理对象
 				return null;
-			} //基础类的bean不会被提前增强 被跳过的bean不会被提前增强
+			} //基础类的bean不会被提前增强 和 被跳过的bean不会被提前增强   shouldSkip会获取程序里所有的增强器
 			if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) {
 				this.advisedBeans.put(cacheKey, Boolean.FALSE);
 				return null;
@@ -289,6 +296,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		// Create proxy here if we have a custom TargetSource.
 		// Suppresses unnecessary default instantiation of the target bean:
 		// The TargetSource will handle target instances in a custom fashion.
+		// 原型模式创建一个新的代理对象
 		TargetSource targetSource = getCustomTargetSource(beanClass, beanName); //原型bean额外处理targetSource
 		//单例的bean对象此处一定返回null (此处不是AOP 对代理对象进行增强的核心逻辑处)
 		if (targetSource != null) {
@@ -314,7 +322,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * identified as one to proxy by the subclass.
 	 * @see #getAdvicesAndAdvisorsForBean
 	 * 回调的时机: bean初始化后
-	 * {@link org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#initializeBean(String, Object, RootBeanDefinition)}
+	 * {@link org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#initializeBean(String, Object, org.springframework.beans.factory.support.RootBeanDefinition)}
 	 * {@link org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#applyBeanPostProcessorsAfterInitialization(Object, String)}
 	 */
 	//用于生成代理对象

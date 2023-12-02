@@ -72,6 +72,7 @@ import org.springframework.util.comparator.InstanceComparator;
 public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFactory implements Serializable {
 
 	// Exclude @Pointcut methods
+	// 增加一个方法上没有@Pointcut注解 判断
 	private static final MethodFilter adviceMethodFilter = ReflectionUtils.USER_DECLARED_METHODS
 			.and(method -> (AnnotationUtils.getAnnotation(method, Pointcut.class) == null));
 
@@ -132,7 +133,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 				new LazySingletonAspectInstanceFactoryDecorator(aspectInstanceFactory);
 
 		List<Advisor> advisors = new ArrayList<>();
-		for (Method method : getAdvisorMethods(aspectClass)) { //获取切面所有的通知方法 遍历所有通知方法
+		for (Method method : getAdvisorMethods(aspectClass)) { //获取切面所有的通知方法(getAdvisorMethods) 遍历所有通知方法
 			// Prior to Spring Framework 5.2.7, advisors.size() was supplied as the declarationOrderInAspect
 			// to getAdvisor(...) to represent the "current position" in the declared methods list.
 			// However, since Java 7 the "current position" is not valid since the JDK no longer
@@ -141,12 +142,14 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 			// discovered via reflection in order to support reliable advice ordering across JVM launches.
 			// Specifically, a value of 0 aligns with the default value used in
 			// AspectJPrecedenceComparator.getAspectDeclarationOrder(Advisor).
+			/* 封装成增强器 */
 			Advisor advisor = getAdvisor(method, lazySingletonAspectInstanceFactory, 0, aspectName); //逐个解析通知方法并封装成Advisor(增强器)
 			if (advisor != null) {
 				advisors.add(advisor);
 			}
 		}
 
+		// 利用装饰者模式延时初始化
 		// If it's a per target aspect, emit the dummy instantiating aspect.
 		if (!advisors.isEmpty() && lazySingletonAspectInstanceFactory.getAspectMetadata().isLazilyInstantiated()) {
 			Advisor instantiationAdvisor = new SyntheticInstantiationAdvisor(lazySingletonAspectInstanceFactory);
@@ -154,6 +157,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 		}
 
 		// Find introduction fields.
+		// 处理@DeclareParents注解的支持  -> 引介
 		for (Field field : aspectClass.getDeclaredFields()) {
 			Advisor advisor = getDeclareParentsAdvisor(field);
 			if (advisor != null) {
@@ -166,9 +170,19 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 	private List<Method> getAdvisorMethods(Class<?> aspectClass) {
 		List<Method> methods = new ArrayList<>();
+		// 增强方法的过滤条件 -> adviceMethodFilter 增加了一个方法上没有@Pointcut注解
+		/*// 以前的写法
+		ReflectionUtils.doWithMethods(aspectClass, method -> {
+			// Exclude pointcuts
+			if (AnnotationUtils.getAnnotation(method, Pointcut.class) == null) {
+				methods.add(method);
+			}
+		}, ReflectionUtils.USER_DECLARED_METHODS);
+		*/
+		// 代码的升级 把这个排除掉@Pointcut注解的方法放到了 方法的过滤条件里 ,然后直接用函数式接口进行匹配
 		ReflectionUtils.doWithMethods(aspectClass, methods::add, adviceMethodFilter);
 		if (methods.size() > 1) {
-			methods.sort(adviceMethodComparator);
+			methods.sort(adviceMethodComparator); // 排序
 		}
 		return methods;
 	}
@@ -203,9 +217,10 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 			int declarationOrderInAspect, String aspectName) {
 
 		validate(aspectInstanceFactory.getAspectMetadata().getAspectClass());
-
+		// 获取解析切入点表达式
 		AspectJExpressionPointcut expressionPointcut = getPointcut(
 				candidateAdviceMethod, aspectInstanceFactory.getAspectMetadata().getAspectClass());
+		// 没有声明通知注解的方法 return null;
 		if (expressionPointcut == null) {
 			return null;
 		}
@@ -216,12 +231,14 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 	@Nullable
 	private AspectJExpressionPointcut getPointcut(Method candidateAdviceMethod, Class<?> candidateAspectClass) {
+		/* 遍历所有定义的注解类型(@Pointcut, @Around, @Before, @After, @AfterReturning, @AfterThrowing) 进行匹配 */
+		// 检索通知方法上的注解 注解类型 成员值 参数name 和 值(注解上的pointcut表达式)
 		AspectJAnnotation aspectJAnnotation =
 				AbstractAspectJAdvisorFactory.findAspectJAnnotationOnMethod(candidateAdviceMethod);
 		if (aspectJAnnotation == null) {
 			return null;
 		}
-
+		//根据注解类型 构建切入点表达式模型
 		AspectJExpressionPointcut ajexp =
 				new AspectJExpressionPointcut(candidateAspectClass, new String[0], new Class<?>[0]);
 		ajexp.setExpression(aspectJAnnotation.getPointcutExpression());

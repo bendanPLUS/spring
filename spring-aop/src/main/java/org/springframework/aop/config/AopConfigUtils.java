@@ -96,7 +96,7 @@ public abstract class AopConfigUtils {
 	@Nullable
 	public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
-		// 注: AnnotationAwareAspectJAutoProxyCreator.class 字节码类型被传入
+		// 注: AnnotationAwareAspectJAutoProxyCreator.class 字节码类型被传入 指定了类型
 		return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);
 	}
 
@@ -133,7 +133,7 @@ public abstract class AopConfigUtils {
 		}
 
 		// 手动 new AnnotationAwareAspectJAutoProxyCreator AOP代理创建器
-		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);//注意这个cls
+		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);//注意这个cls 类型
 		beanDefinition.setSource(source);
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE); // 添加属性 order 最高级
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);

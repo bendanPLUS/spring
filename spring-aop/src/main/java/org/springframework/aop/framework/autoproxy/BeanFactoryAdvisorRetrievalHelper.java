@@ -66,16 +66,17 @@ public class BeanFactoryAdvisorRetrievalHelper {
 	 */
 	public List<Advisor> findAdvisorBeans() {
 		// Determine list of advisor bean names, if not cached already.
-		String[] advisorNames = this.cachedAdvisorBeanNames;
+		String[] advisorNames = this.cachedAdvisorBeanNames; //做了缓存 只有第一次进行逻辑处理 以后都是从缓存里拿
 		if (advisorNames == null) {
 			// Do not initialize FactoryBeans here: We need to leave all regular beans
 			// uninitialized to let the auto-proxy creator apply to them!
+			//通过类型(所有实现Advisor接口的类) 拿到所有beanNames数组 SPI机制
 			advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 					this.beanFactory, Advisor.class, true, false);
-			this.cachedAdvisorBeanNames = advisorNames;
+			this.cachedAdvisorBeanNames = advisorNames; //放入缓存
 		}
 		if (advisorNames.length == 0) {
-			return new ArrayList<>();
+			return new ArrayList<>(); //一个增强器都没有 直接返回
 		}
 
 		List<Advisor> advisors = new ArrayList<>();
@@ -88,6 +89,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 				}
 				else {
 					try {
+						// getBean不用多说了吧, 创建增强器bean  然后收集到增强器集合中 返回
 						advisors.add(this.beanFactory.getBean(name, Advisor.class));
 					}
 					catch (BeanCreationException ex) {
