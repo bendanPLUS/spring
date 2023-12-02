@@ -608,7 +608,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				/* 初始化剩余非延迟加载单例Bean对象 */
 				finishBeanFactoryInitialization(beanFactory);
 
-				// Last step: publish corresponding event.
+				// Last step: publish corresponding event. 刷新完成后的动作
 				finishRefresh();
 			}
 
@@ -951,16 +951,16 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * {@link org.springframework.context.event.ContextRefreshedEvent}.
 	 */
 	protected void finishRefresh() {
-		// Clear context-level resource caches (such as ASM metadata from scanning).
-		clearResourceCaches();
+		// Clear context-level resource caches (such as ASM metadata from scanning). 清楚资源缓存
+		clearResourceCaches(); //清理IOC容器 Refresh 阶段的所有缓存`
 
-		// Initialize lifecycle processor for this context.
+		// Initialize lifecycle processor for this context. 初始化生命周期处理器
 		initLifecycleProcessor();
 
-		// Propagate refresh to lifecycle processor first.
+		// Propagate refresh to lifecycle processor first. 回调生命周期处理器
 		getLifecycleProcessor().onRefresh();
 
-		// Publish the final event.
+		// Publish the final event. 发布容器刷新完毕事件,触发特定监听
 		publishEvent(new ContextRefreshedEvent(this));
 	}
 

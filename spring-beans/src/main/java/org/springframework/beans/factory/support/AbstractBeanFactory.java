@@ -42,18 +42,7 @@ import org.springframework.beans.PropertyEditorRegistrySupport;
 import org.springframework.beans.SimpleTypeConverter;
 import org.springframework.beans.TypeConverter;
 import org.springframework.beans.TypeMismatchException;
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanCurrentlyInCreationException;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.beans.factory.BeanIsAbstractException;
-import org.springframework.beans.factory.BeanIsNotAFactoryException;
-import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
-import org.springframework.beans.factory.CannotLoadBeanClassException;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.SmartFactoryBean;
+import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.BeanExpressionContext;
@@ -221,7 +210,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 */
 	public <T> T getBean(String name, @Nullable Class<T> requiredType, @Nullable Object... args)
 			throws BeansException {
-
+		/**
+		 * {@link DefaultSingletonBeanRegistry#getSingleton(String, ObjectFactory)}
+		 * {@link AbstractAutowireCapableBeanFactory#createBean(String, RootBeanDefinition, Object[])}
+		 */
+		// name+缓存有?+原循?抛+父工厂&没BD+合父BD+@dependsOn+单原它createBean 主要介绍单例模式下createBean
 		return doGetBean(name, requiredType, args, false);
 	}
 
@@ -329,7 +322,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 
 				// Create bean instance.
-				// 单例创建Bean实例
+				// 单例创建Bean实例 getSingleton(加锁+1缓存有?+标记+真正创建+删标记+加缓存);  真正创建:ObjectFactory.getObject()(createBean)
 				if (mbd.isSingleton()) {
 					sharedInstance = getSingleton(beanName, () -> {
 						try {

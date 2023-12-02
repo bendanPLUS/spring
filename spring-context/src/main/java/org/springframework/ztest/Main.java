@@ -1,6 +1,7 @@
 package org.springframework.ztest;
 
 import org.springframework.beans.factory.support.AbstractBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,8 @@ import java.util.stream.Stream;
 public class Main {
 
 	public static void main(String[] args) {
-		test();
+		ApplicationContext ctx = new AnnotationConfigApplicationContext("org.springframework.ztest");
+		//test();
 	}
 
 	public static void testTestAlisaTransformedBeanName() {

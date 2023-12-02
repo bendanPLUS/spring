@@ -523,7 +523,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			// 真正创建bean对象
 			/**
-			 * 创建Bean总共分为三大步:1.创建Bean实例(Instantiation) 2.属性注入+依赖注入(populateBean) 3.初始化Bean(initialize)
+			 * 创建Bean总共分为三大步:1.创建Bean实例(Instantiation) 2.属性赋值+依赖注入(populateBean) DI 3.初始化Bean(initialize)
 			 */
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isTraceEnabled()) {
@@ -579,7 +579,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
-					/*对注解的收集工作(字段+方法)*/
+					/*切入点:对注解的收集工作(字段+方法)*/
 					//属性赋值前, 对注解的收集工作, 用(实现MergedBeanDefinitionPostProcessor接口)后置处理器进行分工处理
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
@@ -601,7 +601,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
-			//在属性赋值和依赖注入之前,提前暴露对象的引用 供其他对象使用
+			//在属性赋值和依赖注入之前,提前暴露对象的引用 供其他对象使用 (放入到三级缓存, 此时二级缓存里还没有)
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -623,6 +623,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (earlySingletonExposure) {
+			// 存放到二级缓存 如果是循环依赖情况 ?
 			Object earlySingletonReference = getSingleton(beanName, false);
 			if (earlySingletonReference != null) {
 				if (exposedObject == bean) {
@@ -965,6 +966,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) {
 		Object exposedObject = bean;
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
+			//for AOP 一个回调 切入点
 			for (SmartInstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().smartInstantiationAware) {
 				exposedObject = bp.getEarlyBeanReference(exposedObject, beanName);
 			}
@@ -1439,6 +1441,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (pvs == null) {
 				pvs = mbd.getPropertyValues();
 			}
+			//依赖注入 @Autowired 注入 Person
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				PropertyValues pvsToUse = bp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 				if (pvsToUse == null) {

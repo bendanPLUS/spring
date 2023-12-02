@@ -16,16 +16,7 @@
 
 package org.springframework.context.support;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -152,6 +143,18 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 			}
 		});
 		if (!phases.isEmpty()) {
+			//写法是一点点改进的
+			/**
+			//版本一:
+			List<Integer> keys = new ArrayList<>(phases.keySet());
+			Collections.sort(keys);
+			for (Integer key : keys) {
+				phases.get(key).start();
+			}
+			//版本二 :
+			phases.forEach((key, value) -> value.start());
+			 */
+			//版本三 :
 			phases.values().forEach(LifecycleGroup::start);
 		}
 	}
