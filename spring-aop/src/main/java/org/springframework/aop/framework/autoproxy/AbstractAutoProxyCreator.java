@@ -262,11 +262,12 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return null;
 	}
 
+	//为了解决循环依赖 提前创建Bean 暴露bean引用
 	@Override
 	public Object getEarlyBeanReference(Object bean, String beanName) {
 		Object cacheKey = getCacheKey(bean.getClass(), beanName);
 		this.earlyProxyReferences.put(cacheKey, bean);
-		return wrapIfNecessary(bean, beanName, cacheKey);
+		return wrapIfNecessary(bean, beanName, cacheKey); //如果有必要?则创建代理对象
 	}
 
 	@Override
@@ -316,7 +317,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
-			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
+			if (this.earlyProxyReferences.remove(cacheKey) != bean) { //如果因为循环依赖提前创建了 则无须再次创建(已创建好代理对象) 则直接返回; earlyProxyReferences存在该bean
 				// AOP的核心 此方法里生成代理对象
 				return wrapIfNecessary(bean, beanName, cacheKey);
 			}
@@ -364,17 +365,18 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
 		}
-
+		//如果上面判断都没有成立,则决定是否需要进行代理对象的创建?
 		// Create proxy if we have advice.
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
+			//创建代理对象
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
 		}
-
+		//记录缓存
 		this.advisedBeans.put(cacheKey, Boolean.FALSE);
 		return bean;
 	}

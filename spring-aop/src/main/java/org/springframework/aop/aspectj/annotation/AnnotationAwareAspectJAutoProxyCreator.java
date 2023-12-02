@@ -40,6 +40,11 @@ import org.springframework.util.Assert;
  *
  * <p>Processing of Spring Advisors follows the rules established in
  * {@link org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator}.
+ * 顶级抽象类 所有关于后置处理器的处理逻辑都在该类中实现 AbstractAutoProxyCreator    注:实现AopInfrastructureBean接口的类永远不会被代理
+ * {@link org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator}. 非常重要
+ *
+ *  创建的时机: AnnotationAwareAspectJAutoProxyCreator本质还是一个bean的后置处理器,so 肯定在refresh方法里的注册所有BeanPostProcessors时;
+ *  {@link org.springframework.context.support.AbstractApplicationContext#registerBeanPostProcessors(ConfigurableListableBeanFactory)}
  *
  * @author Rod Johnson
  * @author Juergen Hoeller

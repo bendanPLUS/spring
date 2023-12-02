@@ -183,6 +183,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Assert.notNull(singletonFactory, "Singleton factory must not be null");
 		synchronized (this.singletonObjects) {
 			if (!this.singletonObjects.containsKey(beanName)) {
+				//加入到三级缓存
 				this.singletonFactories.put(beanName, singletonFactory);
 				this.earlySingletonObjects.remove(beanName);
 				this.registeredSingletons.add(beanName);
@@ -223,11 +224,14 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 						if (singletonObject == null) {
 							ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 							if (singletonFactory != null) {
+								//走到这里说明:二级缓存中没有&三级缓存中存在(当前bean还没进行依赖注入,是一个不完整的bean)
 								/**
+								 *  在属性赋值和依赖注入之前,提前暴露对象的引用 供其他对象使用 (放入到三级缓存, 此时二级缓存里还没有)
+								 *  三级缓存加入的时机:{@link DefaultSingletonBeanRegistry#addSingletonFactory(String, ObjectFactory)}
 								 * {@link AbstractAutowireCapableBeanFactory#doCreateBean(String, RootBeanDefinition, Object[])}
 								 * {@link AbstractAutowireCapableBeanFactory#getEarlyBeanReference(String, RootBeanDefinition, Object)}
 								 */
-								singletonObject = singletonFactory.getObject(); // 触发切入点(getEarlyBeanReference方法) 延迟的拿对象 for AOP
+								singletonObject = singletonFactory.getObject(); // 触发切入点(getEarlyBeanReference方法) 延迟的拿对象 for AOP 拿到代理对象放入二级缓存
 								//将bean对象存放到二级缓存中且从三级缓存中删除
 								this.earlySingletonObjects.put(beanName, singletonObject);
 								this.singletonFactories.remove(beanName);

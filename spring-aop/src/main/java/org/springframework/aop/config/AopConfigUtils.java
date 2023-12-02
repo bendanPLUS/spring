@@ -96,21 +96,21 @@ public abstract class AopConfigUtils {
 	@Nullable
 	public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
-
+		// 注: AnnotationAwareAspectJAutoProxyCreator.class 字节码类型被传入
 		return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);
 	}
 
 	public static void forceAutoProxyCreatorToUseClassProxying(BeanDefinitionRegistry registry) {
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition definition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
-			definition.getPropertyValues().add("proxyTargetClass", Boolean.TRUE);
+			definition.getPropertyValues().add("proxyTargetClass", Boolean.TRUE); // 给 AnnotationAwareAspectJAutoProxyCreator 设置属性
 		}
 	}
 
 	public static void forceAutoProxyCreatorToExposeProxy(BeanDefinitionRegistry registry) {
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition definition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
-			definition.getPropertyValues().add("exposeProxy", Boolean.TRUE);
+			definition.getPropertyValues().add("exposeProxy", Boolean.TRUE); // 给 AnnotationAwareAspectJAutoProxyCreator 设置属性
 		}
 	}
 
@@ -132,9 +132,10 @@ public abstract class AopConfigUtils {
 			return null;
 		}
 
-		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);
+		// 手动 new AnnotationAwareAspectJAutoProxyCreator AOP代理创建器
+		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);//注意这个cls
 		beanDefinition.setSource(source);
-		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);
+		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE); // 添加属性 order 最高级
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		// 注册一个 key:internalAutoProxyCreator value:AnnotationAwareAspectJAutoProxyCreator 的BeanDefinitionMap
 		registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);
