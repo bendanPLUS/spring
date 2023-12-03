@@ -186,6 +186,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public Object getBean(String name) throws BeansException {
+		/**
+		 * {@link DefaultSingletonBeanRegistry#getSingleton(String, ObjectFactory)}
+		 * {@link AbstractAutowireCapableBeanFactory#createBean(String, RootBeanDefinition, Object[])}
+		 */
+		// name+缓存有?+原循?抛+父工厂&没BD+合父BD+@dependsOn+单原它createBean 主要介绍单例模式下createBean
 		return doGetBean(name, null, null, false);
 	}
 
@@ -210,11 +215,6 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 */
 	public <T> T getBean(String name, @Nullable Class<T> requiredType, @Nullable Object... args)
 			throws BeansException {
-		/**
-		 * {@link DefaultSingletonBeanRegistry#getSingleton(String, ObjectFactory)}
-		 * {@link AbstractAutowireCapableBeanFactory#createBean(String, RootBeanDefinition, Object[])}
-		 */
-		// name+缓存有?+原循?抛+父工厂&没BD+合父BD+@dependsOn+单原它createBean 主要介绍单例模式下createBean
 		return doGetBean(name, requiredType, args, false);
 	}
 
@@ -229,6 +229,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @return an instance of the bean
 	 * @throws BeansException if the bean could not be created
 	 */
+	/**
+	 * {@link DefaultSingletonBeanRegistry#getSingleton(String, ObjectFactory)}
+	 * {@link AbstractAutowireCapableBeanFactory#createBean(String, RootBeanDefinition, Object[])}
+	 */
+	// name+缓存有?+原循?抛+父工厂&没BD+合父BD+@dependsOn+单原它createBean 主要介绍单例模式下createBean
 	@SuppressWarnings("unchecked")
 	protected <T> T doGetBean(
 			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
