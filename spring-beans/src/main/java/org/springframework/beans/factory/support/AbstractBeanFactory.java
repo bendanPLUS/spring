@@ -183,11 +183,23 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	//---------------------------------------------------------------------
 	// Implementation of BeanFactory interface
 	//---------------------------------------------------------------------
+
+	/**
+	 * {@link AbstractBeanFactory#doGetBean(String, Class, Object[], boolean)}
+	 * {@link AbstractAutowireCapableBeanFactory#createBean(String, RootBeanDefinition, Object[])}
+	 * {@link AbstractAutowireCapableBeanFactory#doCreateBean(String, RootBeanDefinition, Object[])}
+	 * 		{@link org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#createBeanInstance(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Object[])}
+	 * 		{@link org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#populateBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, org.springframework.beans.BeanWrapper)}
+	 * 		{@link org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#initializeBean(java.lang.String, java.lang.Object, org.springframework.beans.factory.support.RootBeanDefinition)}
+	 */
 	/*  主线任务: 1.getBean -> 2.doGetBean -> 3.createBean -> 4.doCreateBean
 	 *  	1.getBean : 啥也没做
 	 *  	2.doGetBean: name+缓存有?+原循?抛+父工厂&没BD+合父BD+@dependsOn+单原它createBean 主要介绍单例模式下createBean
-	 *  	3.createBean: resolveBeanClass解析Bean类型 prepareMethodOverrides准备重写的方法 实例化的后置处理器的回调
+	 *  	3.createBean: resolveBeanClass解析Bean类型 + prepareMethodOverrides准备重写的方法 + 实例化前后置处理器的回调 + doCreateBean
 	 *  	4.doCreateBean: createBeanInstance + populateBean + initializeBean
+	 *              4.1 createBeanInstance: 解析构造方法+构造方法参数注入+反射调用构造方法创建对象实例
+	 *              4.2 populateBean: 属性的赋值+依赖的注入
+	 *              4.3 initializeBean: Aware相关接口回调 + 执行@PostConstruct + 执行afterPropertiesSet() + 执行自定义init方法
 	 * */
 	@Override
 	public Object getBean(String name) throws BeansException {
