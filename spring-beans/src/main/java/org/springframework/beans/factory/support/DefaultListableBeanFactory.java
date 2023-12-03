@@ -947,9 +947,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		// Trigger initialization of all non-lazy singleton beans...
 		for (String beanName : beanNames) {
-			//  先合并BeanDefinition 合并父类的BeanDefinition
+			// 先合并BeanDefinition 合并父类的BeanDefinition
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
-			//不是抽象的 非延时的  单例Bean进行getBean初始化
+			// 不是抽象的 非延时的  单例Bean进行getBean初始化
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
 				/**
 				 * 通过传入的name来确定createBean的对象
@@ -979,7 +979,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 		}
 		/* 给所有对象 提供一个统一回调的时机 */
-		//此时bean对象已经创建完成 如果有实现SmartInitializingSingleton接口的类 执行afterSingletonsInstantiated()方法
+		// 此时bean对象已经创建完成 如果有实现SmartInitializingSingleton接口的类 执行afterSingletonsInstantiated()方法
 		// Trigger post-initialization callback for all applicable beans...
 		for (String beanName : beanNames) {
 			Object singletonInstance = getSingleton(beanName);
@@ -1420,7 +1420,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				autowiredBeanNames.add(autowiredBeanName);
 			}
 			if (instanceCandidate instanceof Class) {
-				//初始化 依赖注入的对象
+				// 初始化 依赖注入的对象
 				instanceCandidate = descriptor.resolveCandidate(autowiredBeanName, type, this);
 			}
 			Object result = instanceCandidate;
