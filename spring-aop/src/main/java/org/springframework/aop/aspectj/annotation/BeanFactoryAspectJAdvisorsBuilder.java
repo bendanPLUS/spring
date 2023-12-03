@@ -115,7 +115,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 								//解析AspectJ切面类中的通知方法
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
 								if (this.beanFactory.isSingleton(beanName)) {
-									this.advisorsCache.put(beanName, classAdvisors);  // 加入缓存
+									this.advisorsCache.put(beanName, classAdvisors);  // 加入缓存 key切面类Name value该切面所有增强器
 								}
 								else {
 									this.aspectFactoryCache.put(beanName, factory);

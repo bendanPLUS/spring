@@ -183,7 +183,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Assert.notNull(singletonFactory, "Singleton factory must not be null");
 		synchronized (this.singletonObjects) {
 			if (!this.singletonObjects.containsKey(beanName)) {
-				//加入到三级缓存
+				// 加入到三级缓存
 				this.singletonFactories.put(beanName, singletonFactory);
 				this.earlySingletonObjects.remove(beanName);
 				this.registeredSingletons.add(beanName);
@@ -253,7 +253,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 *                         with, if necessary
 	 * @return the registered singleton object
 	 */
-	// 单例创建Bean实例 getSingleton(加锁+1缓存有?+标记+真正创建+删标记+加缓存);  真正创建:ObjectFactory.getObject()(createBean)
+	// 单例创建Bean实例 getSingleton(加锁+1缓存有?+标记+真正创建+删标记+加缓存);  真正创建:ObjectFactory.getObject()(调createBean方法)
 	public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(beanName, "Bean name must not be null");
 		// 加锁
@@ -275,7 +275,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
-					singletonObject = singletonFactory.getObject();//函数式接口 -> 调用createBean(beanName, mbd, args);
+					singletonObject = singletonFactory.getObject(); //函数式接口 -> 调用createBean(beanName, mbd, args);
 					newSingleton = true;
 				} catch (IllegalStateException ex) {
 					// Has the singleton object implicitly appeared in the meantime ->

@@ -133,7 +133,8 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 				new LazySingletonAspectInstanceFactoryDecorator(aspectInstanceFactory);
 
 		List<Advisor> advisors = new ArrayList<>();
-		for (Method method : getAdvisorMethods(aspectClass)) { //获取切面所有的通知方法(getAdvisorMethods) 遍历所有通知方法
+		/* 获取切面所有的通知方法(getAdvisorMethods) 遍历所有通知方法 */
+		for (Method method : getAdvisorMethods(aspectClass)) {
 			// Prior to Spring Framework 5.2.7, advisors.size() was supplied as the declarationOrderInAspect
 			// to getAdvisor(...) to represent the "current position" in the declared methods list.
 			// However, since Java 7 the "current position" is not valid since the JDK no longer
@@ -238,7 +239,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 		if (aspectJAnnotation == null) {
 			return null;
 		}
-		//根据注解类型 构建切入点表达式模型
+		// 根据注解类型 构建切入点表达式模型
 		AspectJExpressionPointcut ajexp =
 				new AspectJExpressionPointcut(candidateAspectClass, new String[0], new Class<?>[0]);
 		ajexp.setExpression(aspectJAnnotation.getPointcutExpression());

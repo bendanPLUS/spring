@@ -196,7 +196,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 			enhancer.setAttemptLoad(true);
 			enhancer.setStrategy(new ClassLoaderAwareGeneratorStrategy(classLoader));
 
-			Callback[] callbacks = getCallbacks(rootClass);
+			Callback[] callbacks = getCallbacks(rootClass); // 获取到拦截器 里面有一个AdvisedDispatcher 有个advised属性存放的所有拦截器
 			Class<?>[] types = new Class<?>[callbacks.length];
 			for (int x = 0; x < types.length; x++) {
 				types[x] = callbacks[x].getClass();
@@ -209,8 +209,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 			// Generate the proxy class and create a proxy instance.
 			// ProxyCallbackFilter has method introspection capability with Advisor access.
-			try {
-				return (classOnly ? createProxyClass(enhancer) : createProxyClassAndInstance(enhancer, callbacks));
+			try { //创建代理对象
+				return (classOnly ? createProxyClass(enhancer) : createProxyClassAndInstance(enhancer, callbacks)); // 第二个
 			}
 			finally {
 				// Reduce ProxyCallbackFilter to key-only state for its class cache role
@@ -683,15 +683,16 @@ class CglibAopProxy implements AopProxy, Serializable {
 			Object target = null;
 			TargetSource targetSource = this.advised.getTargetSource();
 			try {
-				if (this.advised.exposeProxy) {
+				if (this.advised.exposeProxy) { // exposeProxy属性设置
 					// Make invocation available if necessary.
 					oldProxy = AopContext.setCurrentProxy(proxy);
 					setProxyContext = true;
 				}
 				// Get as late as possible to minimize the time we "own" the target, in case it comes from a pool...
-				target = targetSource.getTarget();
-				Class<?> targetClass = (target != null ? target.getClass() : null);
-				List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
+				target = targetSource.getTarget(); // 从封装targetSource拿目标对象
+				Class<?> targetClass = (target != null ? target.getClass() : null); // 拿目标对象的类型
+				// 1.获取增强器链: 根据当前执行的方法 获取要执行的增强器 并以列表返回 链
+				List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass); // 这里
 				Object retVal;
 				// Check whether we only have one InvokerInterceptor: that is,
 				// no real advice, but just reflective invocation of the target.
@@ -700,11 +701,13 @@ class CglibAopProxy implements AopProxy, Serializable {
 					// Note that the final invoker must be an InvokerInterceptor, so we know
 					// it does nothing but a reflective operation on the target, and no hot
 					// swapping or fancy proxying.
+					// 如果没有要执行的增强器 则执行目标方法
 					Object[] argsToUse = AopProxyUtils.adaptArgumentsIfNecessary(method, args);
 					retVal = AopUtils.invokeJoinpointUsingReflection(target, method, argsToUse);
 				}
 				else {
 					// We need to create a method invocation...
+					// 2.构造增强链, 执行增强器逻辑 ->proceed() 方法 一种递归调用的思想: MethodBeforeAdviceInterceptor AspectJAfterAdvice  invoke()
 					retVal = new CglibMethodInvocation(proxy, target, method, args, targetClass, chain, methodProxy).proceed();
 				}
 				return processReturnType(proxy, target, method, retVal);
@@ -753,7 +756,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 		@Nullable
 		public Object proceed() throws Throwable {
 			try {
-				return super.proceed();
+				return super.proceed(); // 走 ReflectiveMethodInvocation类
 			}
 			catch (RuntimeException ex) {
 				throw ex;

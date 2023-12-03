@@ -52,7 +52,7 @@ public interface TargetSource extends TargetClassAware {
 	 * @return {@code true} if the target is immutable
 	 * @see #getTarget
 	 */
-	boolean isStatic();
+	boolean isStatic(); //静态还是动态 单例是静态 原型是动态
 
 	/**
 	 * Return a target instance. Invoked immediately before the
@@ -70,6 +70,6 @@ public interface TargetSource extends TargetClassAware {
 	 * @param target object obtained from a call to {@link #getTarget()}
 	 * @throws Exception if the object can't be released
 	 */
-	void releaseTarget(Object target) throws Exception;
+	void releaseTarget(Object target) throws Exception; //如果用对象池 则需要释放资源
 
 }

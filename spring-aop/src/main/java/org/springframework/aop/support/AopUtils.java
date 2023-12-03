@@ -282,14 +282,15 @@ public abstract class AopUtils {
 	 */
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
 		if (advisor instanceof IntroductionAdvisor ia) {
-			return ia.getClassFilter().matches(targetClass);
+			return ia.getClassFilter().matches(targetClass); // 引介 直接过滤
 		}
 		else if (advisor instanceof PointcutAdvisor pca) {
+			// 方法切入点的增强匹配逻辑
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
 		}
 		else {
 			// It doesn't have a pointcut so we assume it applies.
-			return true;
+			return true; // 未知类型默认可以使用
 		}
 	}
 
@@ -306,15 +307,17 @@ public abstract class AopUtils {
 			return candidateAdvisors;
 		}
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
+		// 1.先匹配引介增强器 注:实际开发几乎用不到 引介通知
 		for (Advisor candidate : candidateAdvisors) {
 			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
 				eligibleAdvisors.add(candidate);
 			}
 		}
 		boolean hasIntroductions = !eligibleAdvisors.isEmpty();
+		// 2.在匹配普通 增强器
 		for (Advisor candidate : candidateAdvisors) {
 			if (candidate instanceof IntroductionAdvisor) {
-				// already processed
+				// already processed 忽略引介增强器
 				continue;
 			}
 			if (canApply(candidate, clazz, hasIntroductions)) {

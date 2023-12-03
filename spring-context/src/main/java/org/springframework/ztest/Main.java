@@ -16,7 +16,7 @@ public class Main {
 		//Stream.of(ctx.getBeanFactory().getBeanDefinitionNames()).forEach(System.out::println);
 		//testTestAlisaTransformedBeanName(ctx);
 		//test(ctx);
-		//testAop(ctx);
+		testAop(ctx);
 		ctx.close();
 	}
 

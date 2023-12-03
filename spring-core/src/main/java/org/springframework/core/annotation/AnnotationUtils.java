@@ -103,7 +103,7 @@ import org.springframework.util.StringUtils;
  * @see java.lang.reflect.AnnotatedElement#getAnnotation(Class)
  * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotations()
  */
-public abstract class AnnotationUtils {
+public abstract class AnnotationUtils { //处理注解的通用方法
 
 	/**
 	 * The attribute name for annotations with a single element.

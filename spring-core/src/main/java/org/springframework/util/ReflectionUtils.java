@@ -357,13 +357,14 @@ public abstract class ReflectionUtils {
 			// nothing to introspect
 			return;
 		}
+		// 拿到所有声明的方法
 		Method[] methods = getDeclaredMethods(clazz, false);
 		for (Method method : methods) {
-			if (mf != null && !mf.matches(method)) {
+			if (mf != null && !mf.matches(method)) { // 进行过滤操作 也是个函数式接口
 				continue;
 			}
 			try {
-				mc.doWith(method);
+				mc.doWith(method); // 函数式编程 触发 methods list add方法
 			}
 			catch (IllegalAccessException ex) {
 				throw new IllegalStateException("Not allowed to access method '" + method.getName() + "': " + ex);

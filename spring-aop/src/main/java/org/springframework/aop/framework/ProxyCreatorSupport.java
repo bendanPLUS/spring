@@ -19,6 +19,8 @@ package org.springframework.aop.framework;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.aop.TargetSource;
+import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
 import org.springframework.util.Assert;
 
 /**
@@ -100,8 +102,15 @@ public class ProxyCreatorSupport extends AdvisedSupport {
 	 */
 	protected final synchronized AopProxy createAopProxy() {
 		if (!this.active) {
-			activate();
+			activate(); // 监听器的通知动作
 		}
+		/***
+		 *  这里传的 this 就是刚刚 手new 的ProxyFactory
+		 *  proxyFactory.addAdvisors(advisors); //添加增强器
+		 *  proxyFactory.setTargetSource(targetSource); // 设置targetSource
+		 *
+		 * {@link AbstractAutoProxyCreator#buildProxy(Class, String, Object[], TargetSource, boolean)}
+		 */
 		return getAopProxyFactory().createAopProxy(this);
 	}
 

@@ -60,6 +60,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 
 		// This is somewhat tricky... We have to process introductions first,
 		// but we need to preserve order in the ultimate list.
+		// 初始化一个增强器适配器的注册器 作用: Advisor转换成MethodInterceptor
 		AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance();
 		Advisor[] advisors = config.getAdvisors();
 		List<Object> interceptorList = new ArrayList<>(advisors.length);
@@ -68,10 +69,13 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 
 		for (Advisor advisor : advisors) {
 			if (advisor instanceof PointcutAdvisor pointcutAdvisor) {
+				// @AspectJ 形式的方法的封装
 				// Add it conditionally.
 				if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(actualClass)) {
+					//  根据通知方法上的切点表达式,判断是否可以匹配当前要执行的目标对象所属类
 					MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher();
 					boolean match;
+					// 引介匹配
 					if (mm instanceof IntroductionAwareMethodMatcher iamm) {
 						if (hasIntroductions == null) {
 							hasIntroductions = hasMatchingIntroductions(advisors, actualClass);
@@ -79,9 +83,11 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 						match = iamm.matches(method, actualClass, hasIntroductions);
 					}
 					else {
+						// 方法匹配
 						match = mm.matches(method, actualClass);
 					}
 					if (match) {
+						// 将增强器类型 转化 成 MethodInterceptor类型
 						MethodInterceptor[] interceptors = registry.getInterceptors(advisor);
 						if (mm.isRuntime()) {
 							// Creating a new object instance in the getInterceptors() method
@@ -96,6 +102,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 					}
 				}
 			}
+			// 处理引介增强器
 			else if (advisor instanceof IntroductionAdvisor ia) {
 				if (config.isPreFiltered() || ia.getClassFilter().matches(actualClass)) {
 					Interceptor[] interceptors = registry.getInterceptors(advisor);
@@ -103,6 +110,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 				}
 			}
 			else {
+				// 其他类型增强器
 				Interceptor[] interceptors = registry.getInterceptors(advisor);
 				interceptorList.addAll(Arrays.asList(interceptors));
 			}
