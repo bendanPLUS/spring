@@ -490,7 +490,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Make sure bean class is actually resolved at this point, and
 		// clone the bean definition in case of a dynamically resolved Class
 		// which cannot be stored in the shared merged bean definition.
-		//获取当前创建的Bean的类型
+		// 获取当前创建的Bean的类型
 		Class<?> resolvedClass = resolveBeanClass(mbd, beanName);
 		if (resolvedClass != null && !mbd.hasBeanClass() && mbd.getBeanClassName() != null) {
 			mbdToUse = new RootBeanDefinition(mbd);
@@ -565,10 +565,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
-			//真正的bean对象创建动作:1.解析构造方法 2.构造方法参数注入 3.反射调用构造方法创建对象实例
+			// 真正的bean对象创建动作:1.解析构造方法 2.构造方法参数注入 3.反射调用构造方法创建对象实例
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
-		//得到真实的bean对象引用
+		// 得到真实的bean对象引用
 		Object bean = instanceWrapper.getWrappedInstance();
 		Class<?> beanType = instanceWrapper.getWrappedClass();
 		if (beanType != NullBean.class) {
@@ -579,8 +579,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
-					/*切入点:对注解的收集工作(字段+方法)*/
-					//属性赋值前, 对注解的收集工作, 用(实现MergedBeanDefinitionPostProcessor接口)后置处理器进行分工处理
+					/* 切入点:对注解的收集工作(字段+方法) */
+					// 属性赋值前, 对注解的收集工作, 用(实现MergedBeanDefinitionPostProcessor接口)后置处理器进行分工处理
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -593,7 +593,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
-		//单例模式下且允许循环依赖(对象创建完成(主要是 :构造函数的确定+反射创建+注解的收集))
+		// 单例模式下且允许循环依赖(对象创建完成(主要是 :构造函数的确定+反射创建+注解的收集))
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
 				isSingletonCurrentlyInCreation(beanName));
 		if (earlySingletonExposure) {
@@ -601,16 +601,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
-			//在属性赋值和依赖注入之前,提前暴露对象的引用 供其他对象使用 (放入到三级缓存, 此时二级缓存里还没有)
+			// 在属性赋值和依赖注入之前,提前暴露对象的引用 供其他对象使用 (放入到三级缓存, 此时二级缓存里还没有)
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
-			//属性的赋值+依赖的注入
+			// 属性的赋值+依赖的注入
 			populateBean(beanName, mbd, instanceWrapper);
-			//bean对象的初始化
+			// bean对象的初始化
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -652,7 +652,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Register bean as disposable.
 		try {
-			//注册一个销毁回调对象的钩子
+			// 注册一个销毁回调对象的钩子
 			registerDisposableBeanIfNecessary(beanName, bean, mbd);
 		}
 		catch (BeanDefinitionValidationException ex) {

@@ -233,7 +233,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(
 			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
 			throws BeansException {
-		//名称的翻译(别名的解析+工厂Name转换)
+		// 名称的翻译(别名的解析+工厂Name转换)
 		String beanName = transformedBeanName(name);
 		Object beanInstance;
 
@@ -250,21 +250,21 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.trace("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
-			//这里传了name 和 beanName两个值  name拿factoryBean实例 beanName拿factoryBean.getObject()
+			// 这里传了name 和 beanName两个值  name拿factoryBean实例 beanName拿factoryBean.getObject()
 			beanInstance = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		}
 
 		else {
 			// Fail if we're already creating this bean instance:
 			// We're assumably within a circular reference.
-			//检查原型模式下的循环依赖问题?如果存在则抛异常
+			// 检查原型模式下的循环依赖问题?如果存在则抛异常
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
 
 			// Check if bean definition exists in this factory.
 			BeanFactory parentBeanFactory = getParentBeanFactory();
-			//有父类工厂+本地工厂不包含该Bean 则尝试使用父类工厂,进行getBean
+			// 有父类工厂+本地工厂不包含该Bean 则尝试使用父类工厂,进行getBean
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.
 				String nameToLookup = originalBeanName(name);
@@ -285,7 +285,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			if (!typeCheckOnly) {
-				//把当前的beanName 放入正在创建的Bean集合中(该Bean标记为正在创建) 且加锁
+				// 把当前的beanName 放入正在创建的Bean集合中(该Bean标记为正在创建) 且加锁
 				markBeanAsCreated(beanName);
 			}
 
@@ -300,7 +300,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				checkMergedBeanDefinition(mbd, beanName, args);
 
 				// Guarantee initialization of beans that the current bean depends on.
-				//处理 @DependsOn注解注释 的强依赖关系 对依赖的bean先 进行初始化
+				// 处理 @DependsOn注解注释 的强依赖关系 对依赖的bean先 进行初始化
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
@@ -308,10 +308,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
 						}
-						//先进行 依赖注册
+						// 先进行 依赖注册
 						registerDependentBean(dep, beanName);
 						try {
-							//再进行 bean的创建
+							// 再进行 bean的创建
 							getBean(dep);
 						}
 						catch (NoSuchBeanDefinitionException ex) {
@@ -352,7 +352,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					finally {
 						afterPrototypeCreation(beanName);
 					}
-					//这里传了name 和 beanName两个值  name拿factoryBean实例 beanName拿factoryBean.getObject()
+					// 这里传了name 和 beanName两个值  name拿factoryBean实例 beanName拿factoryBean.getObject()
 					beanInstance = getObjectForBeanInstance(prototypeInstance, name, beanName, mbd);
 				}
 
@@ -375,7 +375,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 								afterPrototypeCreation(beanName);
 							}
 						});
-						//这里传了name 和 beanName两个值  name拿factoryBean实例 beanName拿factoryBean.getObject()
+						// 这里传了name 和 beanName两个值  name拿factoryBean实例 beanName拿factoryBean.getObject()
 						beanInstance = getObjectForBeanInstance(scopedInstance, name, beanName, mbd);
 					}
 					catch (IllegalStateException ex) {
