@@ -27,20 +27,20 @@ public class Cat implements InitializingBean, SmartInitializingSingleton, SmartL
 	public void afterPropertiesSet() throws Exception {
 		System.out.println("Cat 后执行 实现InitializingBean接口重写afterPropertiesSet()方法 进行初始化");
 	}
+
 	// 需要方法@ Bean注解注入时设置 (initMethod = "init", destroyMethod = "destroy")
 	public void init() {
 		System.out.println("Cat 实现init()方法 进行初始化");
 	}
 
 	public void destroy() {
-		System.out.println("销毁Cat对象");
+		System.out.println("销毁Cat对象 执行destroy()方法");
 	}
-
 
 	@Override
 	public void afterSingletonsInstantiated() {
-		//给所有对象 提供一个统一回调的时机
-		System.out.println(" 此时Cat对象已经创建完成, 为单例非延迟对象创建完成后 , 预留的统一的扩展点(实现SmartInitializingSingleton接口)");
+		// 给所有对象 提供一个统一回调的时机
+		System.out.println("此时Cat对象已经创建完成, 为单例非延迟对象创建完成后 , 预留的统一的扩展点(重写SmartInitializingSingleton接口afterSingletonsInstantiated方法)");
 	}
 
 	@Override
@@ -57,4 +57,5 @@ public class Cat implements InitializingBean, SmartInitializingSingleton, SmartL
 	public boolean isRunning() {
 		return false;
 	}
+
 }

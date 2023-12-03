@@ -13,17 +13,16 @@ public class Main {
 
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext("org.springframework.ztest");
-		Stream.of(ctx.getBeanFactory().getBeanDefinitionNames()).forEach(System.out::println);
-
+		//Stream.of(ctx.getBeanFactory().getBeanDefinitionNames()).forEach(System.out::println);
 		//testTestAlisaTransformedBeanName(ctx);
 		//test(ctx);
-		testAop(ctx);
-
+		//testAop(ctx);
 		ctx.close();
 	}
 
 	public static void testAop(AnnotationConfigApplicationContext ctx) {
-		ctx.getBean(DemoService.class).save();
+		DemoService bean = ctx.getBean(DemoService.class);
+		bean.save();
 	}
 
 	public static void testTestAlisaTransformedBeanName(AnnotationConfigApplicationContext ctx) {
