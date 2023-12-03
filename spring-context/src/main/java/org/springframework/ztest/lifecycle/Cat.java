@@ -28,7 +28,7 @@ public class Cat implements InitializingBean, SmartInitializingSingleton, SmartL
 		System.out.println("Cat 后执行 实现InitializingBean接口重写afterPropertiesSet()方法 进行初始化");
 	}
 
-	// 需要方法@ Bean注解注入时设置 (initMethod = "init", destroyMethod = "destroy")
+	// 需要方法@Bean注解注入时设置 (initMethod = "init", destroyMethod = "destroy")
 	public void init() {
 		System.out.println("Cat 实现init()方法 进行初始化");
 	}
