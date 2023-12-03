@@ -183,7 +183,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	//---------------------------------------------------------------------
 	// Implementation of BeanFactory interface
 	//---------------------------------------------------------------------
-
+	/*  主线任务: 1.getBean -> 2.doGetBean -> 3.createBean -> 4.doCreateBean
+	 *  	1.getBean : 啥也没做
+	 *  	2.doGetBean: name+缓存有?+原循?抛+父工厂&没BD+合父BD+@dependsOn+单原它createBean 主要介绍单例模式下createBean
+	 *  	3.createBean: resolveBeanClass解析Bean类型 prepareMethodOverrides准备重写的方法 实例化的后置处理器的回调
+	 *  	4.doCreateBean: createBeanInstance + populateBean + initializeBean
+	 * */
 	@Override
 	public Object getBean(String name) throws BeansException {
 		/**
