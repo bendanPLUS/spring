@@ -139,6 +139,9 @@ import org.springframework.util.ReflectionUtils;
  *	非常重要:
  *	应用山下文 顶级抽象类实现
  *	AbstractApplicationContext定义和实现绝大多数 应用山下文的特性和功能
+ *  大量的模版方法(规范了整体的功能),具体交由子类实现
+ *  比如:并不要求配置的实现是xml?还是注解驱动?,交由子类实现
+ *  一个非常重要的实现:refresh() 它是ApplicationContext生命周期的核心方法,13步,包含了应用上下文所有重要步骤的处理
  */
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		implements ConfigurableApplicationContext {
