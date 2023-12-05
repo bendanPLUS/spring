@@ -102,6 +102,20 @@ import org.springframework.util.StringUtils;
  * @see #getBean
  * @see #resolveDependency
  */
+ // **** 非常重要 DefaultListableBeanFactory类 非常重要 ****
+ // DefaultListableBeanFactory是唯一正在使用的BeanFactory接口的落地实现 唯一且成熟的落地实现
+	/*
+	*	抽象类(AbstractAutowireCapableBeanFactory)只有bean创建的功能,缺少了bean定义的注册;
+	*   DefaultListableBeanFactory实现了BeanDefinitionRegistry(BeanDefinition注册表)接口,
+	*  	所以DefaultListableBeanFactory具备了注册bean定义信息的功能(BeanDefinition)
+	*   DefaultListableBeanFactory两大功能:
+	* 								1.创建bean  创建bean来自继承的AbstractAutowireCapableBeanFactory
+	* 								2.注册bean定义的信息 来自实现BeanDefinitionRegistry接口
+	*	核心工作:控制bean在创建过程的声明周期和对bean对象的统一管理.
+	*	完整的BeanFactory工作过程是先对bean定义的信息进行注册,再完成bean创建和初始化的工作
+	*   而对于,如何获取bean?bean有那些依赖注入?如何被创建?都有BeanFactory无关 都是有其他组件来完成
+	* 	单一职者
+	 * */
 @SuppressWarnings("serial")
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory
 		implements ConfigurableListableBeanFactory, BeanDefinitionRegistry, Serializable {
