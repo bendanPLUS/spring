@@ -58,7 +58,7 @@ import org.springframework.lang.Nullable;
   /*
   *  大名鼎鼎的ApplicationContext 应用上下文
   *  ApplicationContext接口继承的接口就知道他有什么功能:
-  * 						1. 环境设置        EnvironmentCapable
+  * 						1. 获取运行时环境设置  EnvironmentCapable  Capable有能力的 携带组合,带有Capable 通常会有getxxx()方法获取xxx组件(获取特定的组件)
   *                         2. 对bean的管理    BeanFactory 可叫做容器, 负责管理bean
   * 						3. 国际化的支持     MessageSource
   *                         4. 事件的监听       ApplicationEventPublisher
