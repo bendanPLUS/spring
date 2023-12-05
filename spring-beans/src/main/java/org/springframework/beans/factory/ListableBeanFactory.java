@@ -56,6 +56,7 @@ import org.springframework.lang.Nullable;
  * @see HierarchicalBeanFactory
  * @see BeanFactoryUtils
  */
+  // Listable可列举的, 主要功能: 获取Bean BeanDefinition, 比如说: 根据类型获取所有该类型的bean 根据注解获取所有的bean
 public interface ListableBeanFactory extends BeanFactory {
 
 	/**
