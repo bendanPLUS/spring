@@ -62,7 +62,7 @@ import org.springframework.lang.Nullable;
   *                         2. 对bean的管理    BeanFactory 可叫做容器, 负责管理bean
   * 						3. 国际化的支持     MessageSource
   *                         4. 事件的监听       ApplicationEventPublisher
-  *                         5. 资源的加载和解析  ResourcePatternResolver
+  *                         5. 资源的加载和解析  ResourcePatternResolver(资源模式解析器):根据特定的路径解析资源文件
   *                         (还有对 AOP支持)
   * */
 public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory,
