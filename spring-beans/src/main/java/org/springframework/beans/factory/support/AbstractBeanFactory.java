@@ -103,6 +103,11 @@ import org.springframework.util.StringValueResolver;
  * @see AbstractAutowireCapableBeanFactory#createBean
  * @see DefaultListableBeanFactory#getBeanDefinition
  */
+ /*
+   BeanFactory接口的第一个抽象类实现(它只有部分的功能), 一些基础功能的实现 和 可以从配置源(XML文件)获取定义bean的信息
+   大量的使用模版方法, 父类提供逻辑规范, 子类实现具体实现
+   比较重要的方法 getBean该抽象提供的 doGetbean  和 创建bean对象的都需要经历的最后一步 getObjectForBeanInstance方法
+ * */
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
 	/** Parent bean factory, for bean inheritance support. */
