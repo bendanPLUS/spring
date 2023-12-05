@@ -342,7 +342,11 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	//---------------------------------------------------------------------
 	// Implementation of BeanDefinitionRegistry
 	//---------------------------------------------------------------------
-
+	/*
+	* 委派机制:
+	* GenericApplicationContext定义了注册bean定义信息的方法,但自己却没有做任何扩张操作,
+	* 而是委派给DefaultListableBeanFactory的registerBeanDefinition方法
+	* */
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
