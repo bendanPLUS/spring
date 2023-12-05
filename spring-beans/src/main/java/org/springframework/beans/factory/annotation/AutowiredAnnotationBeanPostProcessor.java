@@ -487,12 +487,12 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	 * {@link org.mybatis.spring.mapper.ClassPathMapperScanner#processBeanDefinitions}
 	 * definition.getPropertyValues().add 进行了属性的注入
 	 */
-	//属性的注入 依赖注入
+	// 属性的注入 依赖注入
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
-			//通过反射 进行 依赖注入
+			// 通过反射 进行 依赖注入
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (BeanCreationException ex) {

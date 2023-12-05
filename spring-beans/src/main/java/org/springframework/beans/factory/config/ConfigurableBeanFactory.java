@@ -48,6 +48,7 @@ import org.springframework.util.StringValueResolver;
  * @see org.springframework.beans.factory.ListableBeanFactory
  * @see ConfigurableListableBeanFactory
  */
+ // Configurable代表这写操作(即有了set的功能) BeanFactory只有读的功能(即get) 目前接口+上了Configurable 就有了可读可写的功能 get and  set
 public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, SingletonBeanRegistry {
 
 	/**
