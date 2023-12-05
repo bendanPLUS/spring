@@ -134,6 +134,12 @@ import org.springframework.util.ReflectionUtils;
  * @see org.springframework.context.ApplicationListener
  * @see org.springframework.context.MessageSource
  */
+
+/*
+ *	非常重要:
+ *	应用山下文 顶级抽象类实现
+ *	AbstractApplicationContext定义和实现绝大多数 应用山下文的特性和功能
+ */
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		implements ConfigurableApplicationContext {
 
