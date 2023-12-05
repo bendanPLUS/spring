@@ -585,7 +585,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// Prepare this context for refreshing.
 			prepareRefresh();
 
-			// Tell the subclass to refresh the internal bean factory.
+			// Configurable带有写的功能(添加监听,添加BeanFactory后置处理器...) Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -604,7 +604,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// 执行所有的BeanFactory的后置处理器的相关方法
 				invokeBeanFactoryPostProcessors(beanFactory);
 
-				// (注册BeanPostProcessors) Register bean processors that intercept bean creation.
+				// 注册Bean后置处理器 Register bean processors that intercept bean creation.
 				registerBeanPostProcessors(beanFactory);
 				beanPostProcess.end();
 
