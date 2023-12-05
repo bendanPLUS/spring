@@ -582,7 +582,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
-					/* 扩张点: 对注解的收集工作(字段+方法) */
+					/* 扩张点一: 对注解的收集工作(字段+方法) */
 					// 属性赋值前, 对注解的收集工作, 用(实现MergedBeanDefinitionPostProcessor接口)后置处理器进行分工处理
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
@@ -1102,6 +1102,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	protected void applyMergedBeanDefinitionPostProcessors(RootBeanDefinition mbd, Class<?> beanType, String beanName) {
 		for (MergedBeanDefinitionPostProcessor processor : getBeanPostProcessorCache().mergedDefinition) {
+			// 此处两个比较重要的后置处理器: AutowiredAnnotationBeanPostProcessor CommonAnnotationBeanPostProcessor
 			processor.postProcessMergedBeanDefinition(mbd, beanType, beanName);
 		}
 	}
@@ -1416,7 +1417,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Give any InstantiationAwareBeanPostProcessors the opportunity to modify the
 		// state of the bean before properties are set. This can be used, for example,
 		// to support styles of field injection.
-		//在属性赋值+依赖注入之前 先调用后置处理器 :InstantiationAwareBeanPostProcessor->postProcessAfterInstantiation
+		// 在属性赋值+依赖注入之前 先调用后置处理器 :InstantiationAwareBeanPostProcessor->postProcessAfterInstantiation
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				if (!bp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
@@ -1426,10 +1427,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
-		//解析出当前bean支持自动注入模式 已经废弃
+		// 解析出当前bean支持自动注入模式 已经废弃
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
-			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
+			MutablePropertyValues newPvs = new MutablePropertyValues(pvs); // 属性
 			// Add property values based on autowire by name if applicable.
 			if (resolvedAutowireMode == AUTOWIRE_BY_NAME) {
 				autowireByName(beanName, mbd, bw, newPvs);
@@ -1445,7 +1446,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (pvs == null) {
 				pvs = mbd.getPropertyValues();
 			}
-			//依赖注入 @Autowired 注入 Person
+			// 依赖注入 @Autowired 注入 Person
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				PropertyValues pvsToUse = bp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 				if (pvsToUse == null) {
@@ -1852,7 +1853,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (logger.isTraceEnabled()) {
 				logger.trace("Invoking afterPropertiesSet() on bean with name '" + beanName + "'");
 			}
-			//如果实现InitializingBean接口则执行回调方法afterPropertiesSet()
+			// 如果实现InitializingBean接口则执行回调方法afterPropertiesSet()
 			((InitializingBean) bean).afterPropertiesSet();
 		}
 
@@ -1863,7 +1864,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					if (StringUtils.hasLength(initMethodName) &&
 							!(isInitializingBean && "afterPropertiesSet".equals(initMethodName)) &&
 							!mbd.hasAnyExternallyManagedInitMethod(initMethodName)) {
-						//反射 回调 InitMethod
+						// 反射 回调 InitMethod
 						invokeCustomInitMethod(beanName, bean, mbd, initMethodName);
 					}
 				}
