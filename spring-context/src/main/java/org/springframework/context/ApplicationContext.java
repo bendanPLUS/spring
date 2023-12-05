@@ -55,6 +55,16 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.factory.BeanFactory
  * @see org.springframework.core.io.ResourceLoader
  */
+  /*
+  *  大名鼎鼎的ApplicationContext 应用上下文
+  *  ApplicationContext接口继承的接口就知道他有什么功能:
+  * 						1. 环境设置        EnvironmentCapable
+  *                         2. 对bean的管理    BeanFactory 可叫做容器, 负责管理bean
+  * 						3. 国际化的支持     MessageSource
+  *                         4. 事件的监听       ApplicationEventPublisher
+  *                         5. 资源的加载和解析  ResourcePatternResolver
+  *                         (还有对 AOP支持)
+  * */
 public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory,
 		MessageSource, ApplicationEventPublisher, ResourcePatternResolver {
 
