@@ -48,7 +48,7 @@ import org.springframework.util.StringValueResolver;
  * @see org.springframework.beans.factory.ListableBeanFactory
  * @see ConfigurableListableBeanFactory
  */
- // Configurable代表这写操作(即有了set的功能) BeanFactory只有读的功能(即get) 目前接口+上了Configurable 就有了可读可写的功能 get and  set
+ // Configurable代表这写操作(即有了set的功能) BeanFactory只有读的功能(即get) 目前接口+上了Configurable 就有了可读可写的功能 get and set
 public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, SingletonBeanRegistry {
 
 	/**
@@ -75,7 +75,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * a parent BeanFactory
 	 * @see #getParentBeanFactory()
 	 */
-	void setParentBeanFactory(BeanFactory parentBeanFactory) throws IllegalStateException;
+	void setParentBeanFactory(BeanFactory parentBeanFactory) throws IllegalStateException; //设置父类工厂
 
 	/**
 	 * Set the class loader to use for loading bean classes.
@@ -87,7 +87,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * @param beanClassLoader the class loader to use,
 	 * or {@code null} to suggest the default class loader
 	 */
-	void setBeanClassLoader(@Nullable ClassLoader beanClassLoader);
+	void setBeanClassLoader(@Nullable ClassLoader beanClassLoader); //设置类的加载器
 
 	/**
 	 * Return this factory's class loader for loading bean classes
@@ -199,7 +199,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * @see #addPropertyEditorRegistrar
 	 * @see #registerCustomEditor
 	 */
-	void setTypeConverter(TypeConverter typeConverter);
+	void setTypeConverter(TypeConverter typeConverter); //设置类型转化器
 
 	/**
 	 * Obtain a type converter as used by this BeanFactory. This may be a fresh
@@ -243,7 +243,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * will always be applied after programmatically registered ones.
 	 * @param beanPostProcessor the post-processor to register
 	 */
-	void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
+	void addBeanPostProcessor(BeanPostProcessor beanPostProcessor); //增加bean的后置处理器
 
 	/**
 	 * Return the current number of registered BeanPostProcessors, if any.
