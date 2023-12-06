@@ -261,7 +261,12 @@ class ConfigurationClassParser {
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter);
 		}
 		while (sourceClass != null);
-
+		/**
+		 *  ConfigurationClassBeanDefinitionReader 负责读取封装配置类为BeanDefinition
+		 *  this.reader.loadBeanDefinitions(configClasses);
+		 * {@link ConfigurationClassBeanDefinitionReader#loadBeanDefinitions(Set)}
+		 */
+		// 所有的配置类的存在这里 待使用 -> this.reader.loadBeanDefinitions(configClasses);
 		this.configurationClasses.put(configClass, configClass);
 	}
 

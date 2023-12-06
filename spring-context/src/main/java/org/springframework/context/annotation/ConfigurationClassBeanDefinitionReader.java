@@ -219,11 +219,11 @@ class ConfigurationClassBeanDefinitionReader {
 			}
 			return;
 		}
-		//构造BeanDefinition
+		// 构造BeanDefinition
 		ConfigurationClassBeanDefinition beanDef = new ConfigurationClassBeanDefinition(configClass, metadata, beanName);
 		beanDef.setSource(this.sourceExtractor.extractSource(metadata, configClass.getResource()));
 
-		if (metadata.isStatic()) { //如果是静态方法
+		if (metadata.isStatic()) { // 如果是静态方法
 			// static @Bean method
 			if (configClass.getMetadata() instanceof StandardAnnotationMetadata sam) {
 				beanDef.setBeanClass(sam.getIntrospectedClass());
@@ -284,7 +284,7 @@ class ConfigurationClassBeanDefinitionReader {
 			logger.trace(String.format("Registering bean definition for @Bean method %s.%s()",
 					configClass.getMetadata().getClassName(), beanName));
 		}
-		//注册到BeanDefinition Map
+		// 注册到BeanDefinition Map
 		this.registry.registerBeanDefinition(beanName, beanDefToRegister);
 	}
 
