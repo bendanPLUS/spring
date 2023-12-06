@@ -142,6 +142,7 @@ import org.springframework.util.ReflectionUtils;
  *  大量的模版方法(规范了整体的功能),具体交由子类实现
  *  比如:并不要求配置的实现是xml?还是注解驱动?,交由子类实现
  *  一个非常重要的实现:refresh() 它是ApplicationContext生命周期的核心方法,13步,包含了应用上下文所有重要步骤的处理
+ *  书中用一整章的方式只讲这个AbstractApplicationContext的refresh()方法 可见其重要性
  */
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		implements ConfigurableApplicationContext {
@@ -593,11 +594,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
+				/**
+				 * bean工厂的后置 处理
+				 * 当前bean工厂DefaultListableBeanFactory的后置处理, 是一个模版方法, 交给子类实现
+				 * {@link org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext}
+				 */
 				postProcessBeanFactory(beanFactory);
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 				// Invoke factory processors registered as beans in the context.
 				/**
+				 * bean工厂后置处理器的后置 处理
 				 * 最重要的BeanFactory后置处理器:
 				 * {@link ConfigurationClassPostProcessor#processConfigBeanDefinitions(BeanDefinitionRegistry) 非常重要的回调方法}
 				 */
@@ -786,6 +793,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		// 此处getBeanFactoryPostProcessors获取的工厂的后置处理器都是手new出来的
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors()); //注:此处是传入编程注入(手new的)的BeanFactoryPostProcessors 例:类ConfigurationWarningsApplicationContextInitializer的initialize方法
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime

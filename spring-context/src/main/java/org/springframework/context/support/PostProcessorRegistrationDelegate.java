@@ -41,6 +41,7 @@ import org.springframework.beans.factory.support.BeanDefinitionValueResolver;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.context.annotation.AnnotationConfigUtils;
 import org.springframework.context.annotation.ConfigurationClassPostProcessor;
 import org.springframework.core.OrderComparator;
 import org.springframework.core.Ordered;
@@ -82,15 +83,15 @@ final class PostProcessorRegistrationDelegate {
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
 		Set<String> processedBeans = new HashSet<>();
 
-		if (beanFactory instanceof BeanDefinitionRegistry registry) {  //注:DefaultListableBeanFactory实现了BeanDefinitionRegistry接口 必定为true
+		if (beanFactory instanceof BeanDefinitionRegistry registry) {  // 注:DefaultListableBeanFactory实现了BeanDefinitionRegistry接口 必定为true
 			/* 分成两个集合  BeanDefinitionRegistryPostProcessor集合 和 BeanFactoryPostProcessor集合 */
-			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
-			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
-			//一.处理方法传入的 List<BeanFactoryPostProcessor> beanFactoryPostProcessors
+			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>(); // 常规的 (修改和查询)
+			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>(); // 具有注册BeanDefinition功能的后置处理器
+			// 一.处理方法传入的 List<BeanFactoryPostProcessor> beanFactoryPostProcessors
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor registryProcessor) {
 					/* 执行最高优先级 程序启动手new的BeanDefinitionRegistryPostProcessor (传入的beanFactoryPostProcessors)*/
-					registryProcessor.postProcessBeanDefinitionRegistry(registry); //BeanDefinitionRegistry的后置处理器会立即执行 , 进行回调处理
+					registryProcessor.postProcessBeanDefinitionRegistry(registry); // BeanDefinitionRegistry的后置处理器会立即执行 , 进行回调处理
 					registryProcessors.add(registryProcessor);
 				}
 				else {
@@ -102,30 +103,36 @@ final class PostProcessorRegistrationDelegate {
 			// uninitialized to let the bean factory post-processors apply to them!
 			// Separate between BeanDefinitionRegistryPostProcessors that implement
 			// PriorityOrdered, Ordered, and the rest.
-			//二.处理 beanFactory通过类型匹配的后置处理器 分为: 1.实现PriorityOrdered接口的(最高优先级) 2.实现Ordered接口的 3.普通的BeanDefinitionRegistry后置处理器
+			// 二.处理 beanFactory通过类型匹配的后置处理器 分为: 1.实现PriorityOrdered接口的(最高优先级)->List currentRegistryProcessors 2.实现Ordered接口的 3.普通的BeanDefinitionRegistry后置处理器
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 			/**
 			 * 实现PriorityOrdered和BeanDefinitionRegistryPostProcessor接口的实现类
 			 * TODO 此处其实找到一个后置处理器,就是大名鼎鼎的 {@link ConfigurationClassPostProcessor} 它是{@link BeanDefinitionRegistryPostProcessor}接口的唯一实现类
 			 */
-			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
+			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered. 实现BeanDefinitionRegistryPostProcessor接口代表具有注册BeanDefinition能力
 			String[] postProcessorNames =
-					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
+					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false); // 遍历beanDefinitionMap集合进行类型匹配
 			for (String ppName : postProcessorNames) {
-				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
+				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) { // 类型匹配 是否实现PriorityOrdered接口?
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class)); //创建成Bean 以前是BeanDefinition 通过getBean创建成Bean
 					processedBeans.add(ppName);
 				}
 			}
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			registryProcessors.addAll(currentRegistryProcessors);
+			/**
+			 * 非常重要
+			 * 注:其实此处只执行了一个后置处理器 {@link ConfigurationClassPostProcessor#processConfigBeanDefinitions(BeanDefinitionRegistry)}
+			 * ConfigurationClassPostProcessor的注册时机: 创建IOC容器初始化时; {@link org.springframework.boot.SpringApplication#run(java.lang.String...)} -> context = createApplicationContext() ->{@link org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext#AnnotationConfigServletWebServerApplicationContext()} ->{@link AnnotationConfigUtils#registerAnnotationConfigProcessors(BeanDefinitionRegistry, Object)} this.reader = new AnnotatedBeanDefinitionReader(this);
+			 */
+			// 遍历执行 后置处理器的postProcessBeanDefinitionRegistry方法
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry, beanFactory.getApplicationStartup());
-			currentRegistryProcessors.clear(); //每次都重置清空 reset
+			currentRegistryProcessors.clear(); // 每次都重置清空 reset
 
-			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
+			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered. 重新拿的原因是 有可能新注册进来了BeanDefinitionRegistryPostProcessor类型的后置处理器
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
-				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) {
+				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) { // 类型匹配 是否实现Ordered接口(注解)?
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
@@ -141,10 +148,11 @@ final class PostProcessorRegistrationDelegate {
 				reiterate = false;
 				postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 				for (String ppName : postProcessorNames) {
+					// 去重 processedBeans已经执行完回调方法的后置处理器
 					if (!processedBeans.contains(ppName)) {
 						currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 						processedBeans.add(ppName);
-						reiterate = true;
+						reiterate = true; // 如果一直有新的后置处理器注册进来, 则一直循环
 					}
 				}
 				sortPostProcessors(currentRegistryProcessors, beanFactory);

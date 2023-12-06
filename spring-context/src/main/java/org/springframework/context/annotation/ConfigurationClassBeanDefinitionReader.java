@@ -127,7 +127,7 @@ class ConfigurationClassBeanDefinitionReader {
 	 */
 	private void loadBeanDefinitionsForConfigurationClass(
 			ConfigurationClass configClass, TrackedConditionEvaluator trackedConditionEvaluator) {
-		//与条件装配有关的逻辑...
+		// 与条件装配有关的逻辑...
 		if (trackedConditionEvaluator.shouldSkip(configClass)) {
 			String beanName = configClass.getBeanName();
 			if (StringUtils.hasLength(beanName) && this.registry.containsBeanDefinition(beanName)) {
@@ -142,12 +142,12 @@ class ConfigurationClassBeanDefinitionReader {
 		if (configClass.isImported()) {
 			registerBeanDefinitionForImportedConfigurationClass(configClass);
 		}
-		// registry 当前类 所有的标记@@Bean的方法
+		// registry 当前类 所有的标记@Bean的方法
 		for (BeanMethod beanMethod : configClass.getBeanMethods()) {
 			loadBeanDefinitionsForBeanMethod(beanMethod);
 		}
 
-		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());//注册来自XML中的Bean
+		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources()); // 注册来自XML中的Bean
 		/**
 		 * 这里进行了统一处理
 		 * 1.先收集了所有 Implementation {@link ImportBeanDefinitionRegistrar}接口的类: {@link ConfigurationClassParser#processImports : {@link ConfigurationClass#addImportBeanDefinitionRegistrar} }

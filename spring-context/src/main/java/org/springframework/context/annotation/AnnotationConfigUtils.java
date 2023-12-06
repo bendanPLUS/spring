@@ -161,7 +161,7 @@ public abstract class AnnotationConfigUtils {
 
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			/**
-			 * 注册到BeanDefinitionMap里的时机: {@link org.springframework.boot.SpringApplication#run(java.lang.String...)} -> context = createApplicationContext() ->{@link org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext#AnnotationConfigServletWebServerApplicationContext()} ->{@link AnnotationConfigUtils#registerAnnotationConfigProcessors(BeanDefinitionRegistry, Object)}
+			 * 注册到BeanDefinitionMap里的时机: {@link org.springframework.boot.SpringApplication#run(java.lang.String...)} -> context = createApplicationContext() ->{@link org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext#AnnotationConfigServletWebServerApplicationContext()} ->{@link AnnotationConfigUtils#registerAnnotationConfigProcessors(BeanDefinitionRegistry, Object)} this.reader = new AnnotatedBeanDefinitionReader(this);
 			 * 注解驱动 用编码创建的factory后置处理器(ConfigurationClassPostProcessor) 放入BeanDefinitionMap中 等待被注册  备注:它实现了BeanDefinitionRegistryPostProcessor接口并且还实现了PriorityOrdered接口 是最好优先级要执行的后置处理器
 			 * 创建的时机:{@link PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory, List)} -> currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class))
 			 * 激活的时机: {@link PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory, List)} ->postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);

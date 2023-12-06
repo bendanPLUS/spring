@@ -143,6 +143,7 @@ public abstract class ConfigurationClassUtils {
 			}
 		}
 
+		// 有@Configuration注解的类
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
@@ -179,13 +180,13 @@ public abstract class ConfigurationClassUtils {
 
 		// Any of the typical annotations found?
 		for (String indicator : candidateIndicators) {
-			if (metadata.isAnnotated(indicator)) { //@Component @ComponentScan @Import @ImportResource 就返回ture
+			if (metadata.isAnnotated(indicator)) {  // @Component @ComponentScan @Import @ImportResource 就返回ture
 				return true;
 			}
 		}
 
 		// Finally, let's look for @Bean methods...
-		return hasBeanMethods(metadata);
+		return hasBeanMethods(metadata); // @Bean methods也可以
 	}
 
 	static boolean hasBeanMethods(AnnotationMetadata metadata) {

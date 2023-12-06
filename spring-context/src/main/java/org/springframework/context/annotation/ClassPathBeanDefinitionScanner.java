@@ -273,25 +273,26 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		for (String basePackage : basePackages) {
-			/* 真正进行扫描方法 拿到所有标记为@Component的类 */
+			/* 真正进行扫描方法 拿到包路径下所有标记为@Component注解及其衍生注解 的bean */
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
-				candidate.setScope(scopeMetadata.getScopeName());
+				candidate.setScope(scopeMetadata.getScopeName()); // 设置作用域 单例?原型?
 				// 生成 beanName
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
 				if (candidate instanceof AbstractBeanDefinition abstractBeanDefinition) {
 					postProcessBeanDefinition(abstractBeanDefinition, beanName);
 				}
 				if (candidate instanceof AnnotatedBeanDefinition annotatedBeanDefinition) {
-					AnnotationConfigUtils.processCommonDefinitionAnnotations(annotatedBeanDefinition);
+					AnnotationConfigUtils.processCommonDefinitionAnnotations(annotatedBeanDefinition); //  处理bean中的注解 @Lazy@DependsOn@Role@Description
 				}
 				if (checkCandidate(beanName, candidate)) { //检测下beanDefinitionMap里是否存在? 不存在就注册registerBeanDefinition(definitionHolder, this.registry);
-					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
+					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName); // 设置完BeanDefinition信息
 					definitionHolder =
-							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
+							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry); //  AOP属性相关的属性
 					beanDefinitions.add(definitionHolder);
-					registerBeanDefinition(definitionHolder, this.registry); // 注册BeanDefinition
+					//
+					registerBeanDefinition(definitionHolder, this.registry); /* 注册BeanDefinition */
 				}
 			}
 		}

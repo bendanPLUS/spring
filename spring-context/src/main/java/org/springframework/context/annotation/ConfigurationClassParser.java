@@ -160,14 +160,14 @@ class ConfigurationClassParser {
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
-				if (bd instanceof AnnotatedBeanDefinition annotatedBeanDef) { //注解的配置类
+				if (bd instanceof AnnotatedBeanDefinition annotatedBeanDef) { // 注解的配置类
 					parse(annotatedBeanDef.getMetadata(), holder.getBeanName());
 				}
-				else if (bd instanceof AbstractBeanDefinition abstractBeanDef && abstractBeanDef.hasBeanClass()) { //手写注入的配置类
+				else if (bd instanceof AbstractBeanDefinition abstractBeanDef && abstractBeanDef.hasBeanClass()) { // 手写注入的配置类
 					parse(abstractBeanDef.getBeanClass(), holder.getBeanName());
 				}
 				else {
-					parse(bd.getBeanClassName(), holder.getBeanName()); //其他情况
+					parse(bd.getBeanClassName(), holder.getBeanName()); // 其他情况
 				}
 			}
 			catch (BeanDefinitionStoreException ex) {
@@ -195,7 +195,7 @@ class ConfigurationClassParser {
 		 * 1.收集工作执行时机: {@link ConfigurationClassParser#processImports(ConfigurationClass, SourceClass, Collection, Predicate, boolean)} -> configClass.addImportBeanDefinitionRegistrar
 		 * 2.同一执行回调方法时机(registrar.registerBeanDefinitions): {@link ConfigurationClassBeanDefinitionReader#loadBeanDefinitionsFromRegistrars(Map)}
 		 */
-		this.deferredImportSelectorHandler.process();
+		this.deferredImportSelectorHandler.process(); //整体流程走完,最后执行
 	}
 
 	protected final void parse(@Nullable String className, String beanName) throws IOException {
@@ -232,7 +232,7 @@ class ConfigurationClassParser {
 	}
 
 	protected void processConfigurationClass(ConfigurationClass configClass, Predicate<String> filter) throws IOException {
-		//条件装配的判断
+		// 条件装配的判断
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
 			return;
 		}
@@ -256,7 +256,8 @@ class ConfigurationClassParser {
 
 		// Recursively process the configuration class and its superclass hierarchy. 前置校验
 		SourceClass sourceClass = asSourceClass(configClass, filter);
-		do { //真正的解析处理 doXxx()
+		// 先do后while 根据sourceClass是否为null?来退出循环
+		do { // 真正的解析处理 doXxx()
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter);
 		}
 		while (sourceClass != null);
@@ -272,17 +273,18 @@ class ConfigurationClassParser {
 	 * @param sourceClass a source class
 	 * @return the superclass, or {@code null} if none found or previously processed
 	 */
+	// 注:方法处理的是SourceClass而不是ConfigurationClass
 	@Nullable
 	protected final SourceClass doProcessConfigurationClass(
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
 			throws IOException {
-		// 1.处理 @Component 注解 因为是@Configration注解标注的 所以必定是@Component
+		/* 1.处理 @Component 注解 因为是@Configration注解标注的 所以必定是@Component */
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
 			processMemberClasses(configClass, sourceClass, filter);
 		}
 
-		// 2.Process any @PropertySource annotations  2.处理@PropertySource注解
+		/* 2.处理@PropertySource注解 Process any @PropertySource annotations */
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), PropertySources.class,
 				org.springframework.context.annotation.PropertySource.class)) {
@@ -295,25 +297,26 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// 3.Process any @ComponentScan annotations
+		/* 3.查看是否标记@ComponentScans? or @ComponentScan注解? Process any @ComponentScan annotations */
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
 		if (!componentScans.isEmpty() &&
 				!this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
 			for (AnnotationAttributes componentScan : componentScans) {
 				// The config class is annotated with @ComponentScan -> perform the scan immediately
+				// 进行包扫描(只处理标记为@Component注解及其衍生注解的bean) 并注册 bean definition
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
 				// Check the set of scanned definitions for any further config classes and parse recursively if needed
-				//扫描到的类 是否存在注解配置类?
+				// 扫描到的类 是否存在注解配置类?
 				for (BeanDefinitionHolder holder : scannedBeanDefinitions) {
 					BeanDefinition bdCand = holder.getBeanDefinition().getOriginatingBeanDefinition();
 					if (bdCand == null) {
 						bdCand = holder.getBeanDefinition();
 					}
-					//只要是被 @Component @ComponentScan @Import @ImportResource及其派生 标注 都为true
+					// 只要是被 @Component @ComponentScan @Import @ImportResource及其派生 标注 都为true @Bean methods也可以
 					if (ConfigurationClassUtils.checkConfigurationClassCandidate(bdCand, this.metadataReaderFactory)) {
-						// 这里是个递归调用parse方法 *非常重要*
+						// 每一个标记为@Configuration @Component @ComponentScan @Import @ImportResource及其派生注解的类, 都需要递归执行parse方法, 穷尽所有要注册的bean *非常重要*
 						/* 也就是说所有可以被扫描到的类都要经历此步骤 并且注册到:configurationClasses Map */
 						parse(bdCand.getBeanClassName(), holder.getBeanName());
 					}
@@ -321,10 +324,10 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// 4.Process any @Import annotations
+		/* 4.Process any @Import annotations */
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
-		// 5.Process any @ImportResource annotations 注解驱动IOC的情况下,当需要导入XML文件时,可借助@ImportResource注解
+		/* 5.Process any @ImportResource annotations 注解驱动IOC的情况下,当需要导入XML文件时,可借助@ImportResource注解 */
 		AnnotationAttributes importResource =
 				AnnotationConfigUtils.attributesFor(sourceClass.getMetadata(), ImportResource.class);
 		if (importResource != null) {
@@ -336,28 +339,30 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// 6.Process individual @Bean methods 会扫描到所有标记@Bean的方法
+		/* 6.Process individual @Bean methods 会扫描到所有标记@Bean的方法 */
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 		}
 
-		// Process default methods on interfaces
+		// 配置类实现接口默认的方法 Process default methods on interfaces
 		processInterfaces(configClass, sourceClass);
 
 		// Process superclass, if any
+		// 递归处理父类
 		if (sourceClass.getMetadata().hasSuperClass()) {
 			String superclass = sourceClass.getMetadata().getSuperClassName();
 			if (superclass != null && !superclass.startsWith("java") &&
 					!this.knownSuperclasses.containsKey(superclass)) {
 				this.knownSuperclasses.put(superclass, configClass);
 				// Superclass found, return its annotation metadata and recurse
+				// 发现父类 return了父类 没有  return null
 				return sourceClass.getSuperClass();
 			}
 		}
 
 		// No superclass -> processing is complete
-		return null;
+		return null;  // return null 已处理完所有父类 递归已完成
 	}
 
 	/**
@@ -396,7 +401,9 @@ class ConfigurationClassParser {
 	/**
 	 * Register default methods on interfaces implemented by the configuration class.
 	 */
+	// 配置类实现接口默认的方法
 	private void processInterfaces(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {
+		// 遍历sourceClass的所有接口
 		for (SourceClass ifc : sourceClass.getInterfaces()) {
 			Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(ifc);
 			for (MethodMetadata methodMetadata : beanMethods) {
@@ -405,6 +412,7 @@ class ConfigurationClassParser {
 					configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 				}
 			}
+			// 递归
 			processInterfaces(configClass, ifc);
 		}
 	}
