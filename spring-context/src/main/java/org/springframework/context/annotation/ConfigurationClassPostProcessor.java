@@ -124,7 +124,7 @@ import org.springframework.util.CollectionUtils;
  * @author Phillip Webb
  * @author Sam Brannen
  * @since 3.0
- *                  {@link org.springframework.context.support.PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors 方法}
+ *    配置类后置处理器        {@link org.springframework.context.support.PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors 方法}
  */ /* 实现了PriorityOrdered接口 所以它的后置处理器方法执行优先级最高, 后置处理器相应方法执行顺序:顶级启动手写注入 -> PriorityOrdered -> Order -> 普通 */
 public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPostProcessor,
 		BeanRegistrationAotProcessor, BeanFactoryInitializationAotProcessor, PriorityOrdered,

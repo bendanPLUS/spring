@@ -595,6 +595,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
 				/**
+				 * 执行AnnotationConfigServletWebServerApplicationContext类的postProcessBean方法
 				 * bean工厂的后置 处理
 				 * 当前bean工厂DefaultListableBeanFactory的后置处理, 是一个模版方法, 交给子类实现
 				 * {@link org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext}
@@ -608,7 +609,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 * 最重要的BeanFactory后置处理器:
 				 * {@link ConfigurationClassPostProcessor#processConfigBeanDefinitions(BeanDefinitionRegistry) 非常重要的回调方法}
 				 */
-				// 执行所有的BeanFactory的后置处理器的相关方法
+				// 执行所有的BeanFactory的后置处理器的postProcessBeanDefinitionRegistry方法 注册所有BeanDefinition
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// 注册Bean后置处理器 Register bean processors that intercept bean creation.
@@ -793,6 +794,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		// Delegate 委托 代理 委派 代表
+		// PostProcessorRegistrationDelegate是AbstractApplicationContext委托执行post processors任务的工具类
 		// 此处getBeanFactoryPostProcessors获取的工厂的后置处理器都是手new出来的
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors()); //注:此处是传入编程注入(手new的)的BeanFactoryPostProcessors 例:类ConfigurationWarningsApplicationContextInitializer的initialize方法
 
