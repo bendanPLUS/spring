@@ -103,7 +103,7 @@ public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProx
 		for (Advisor advisor : candidateAdvisors) {
 			if (advisor instanceof AspectJPointcutAdvisor pointcutAdvisor &&
 					pointcutAdvisor.getAspectName().equals(beanName)) {
-				//增强器所在的类名 与 当前beanName相同 则该bean不需要增强 返回true
+				// 增强器所在的类名 与 当前beanName相同 则该bean不需要增强 返回true
 				return true;
 			}
 		}

@@ -264,12 +264,12 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return null;
 	}
 
-	//为了解决循环依赖 提前创建Bean 暴露bean引用
+	// 为了解决循环依赖 提前创建Bean 暴露bean引用
 	@Override
 	public Object getEarlyBeanReference(Object bean, String beanName) {
 		Object cacheKey = getCacheKey(bean.getClass(), beanName);
 		this.earlyProxyReferences.put(cacheKey, bean);
-		return wrapIfNecessary(bean, beanName, cacheKey); //如果有必要?则创建代理对象
+		return wrapIfNecessary(bean, beanName, cacheKey); // 如果有必要?则创建代理对象
 	}
 
 	/***
@@ -282,11 +282,11 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	@Override
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
 		Object cacheKey = getCacheKey(beanClass, beanName);
-		//决定是否要提前增强当前的bean?
+		// 决定是否要提前增强当前的bean?
 		if (!StringUtils.hasLength(beanName) || !this.targetSourcedBeans.contains(beanName)) {
-			if (this.advisedBeans.containsKey(cacheKey)) { //被增强的bean是不会再次被增强的 缓存里有说明已经创建了该代理对象
+			if (this.advisedBeans.containsKey(cacheKey)) { // 被增强的bean是不会再次被增强的 缓存里有说明已经创建了该代理对象
 				return null;
-			} //基础类的bean不会被提前增强 和 被跳过的bean不会被提前增强
+			} // 基础类的bean不会被提前增强 和 被跳过的bean不会被提前增强
 			/* 非常重要: shouldSkip会获取程序里所有的增强器 */
 			if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) {
 				this.advisedBeans.put(cacheKey, Boolean.FALSE);
@@ -394,6 +394,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			// 2.创建代理对象
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
+
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
 		}
@@ -525,8 +526,8 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			}
 		}
 
-		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors); //构建整合所有的增强器
-		proxyFactory.addAdvisors(advisors); //添加增强器
+		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors); // 构建整合所有的增强器
+		proxyFactory.addAdvisors(advisors); // 添加增强器
 		proxyFactory.setTargetSource(targetSource); // 设置targetSource
 		customizeProxyFactory(proxyFactory);
 
