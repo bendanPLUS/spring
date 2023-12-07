@@ -132,6 +132,14 @@ public abstract class AnnotationConfigUtils {
 	 * Register all relevant annotation post processors in the given registry.
 	 * @param registry the registry to operate on
 	 */
+	/**
+	 *       向容器注册了一组基础设施PostProcessor
+	 * 		 作用于BeanDefinitionRegistry(容器级)的BeanDefinitionRegistryPostProcessor : 1.{@link ConfigurationClassPostProcessor}
+	 * 		 作用于BeanFactory(容器级)的BeanFactoryPostProcessor: 4.{@link EventListenerMethodProcessor}
+	 * 		 一个Factory: 5.{@link DefaultEventListenerFactory}
+	 * 		 一般bean级别的BeanPostProcessor : 2.{@link AutowiredAnnotationBeanPostProcessor} 3.{@link CommonAnnotationBeanPostProcessor}
+	 */
+	// 静态方法
 	public static void registerAnnotationConfigProcessors(BeanDefinitionRegistry registry) {
 		registerAnnotationConfigProcessors(registry, null);
 	}
@@ -144,6 +152,15 @@ public abstract class AnnotationConfigUtils {
 	 * @return a Set of BeanDefinitionHolders, containing all bean definitions
 	 * that have actually been registered by this call
 	 */
+
+	/**
+	 *       向容器注册了一组基础设施PostProcessor
+	 * 		 作用于BeanDefinitionRegistry(容器级)的BeanDefinitionRegistryPostProcessor : 1.{@link ConfigurationClassPostProcessor}
+	 * 		 作用于BeanFactory(容器级)的BeanFactoryPostProcessor: 4.{@link EventListenerMethodProcessor}
+	 * 		 一个Factory: 5.{@link DefaultEventListenerFactory}
+	 * 		 一般bean级别的BeanPostProcessor : 2.{@link AutowiredAnnotationBeanPostProcessor} 3.{@link CommonAnnotationBeanPostProcessor}
+	 */
+	/* 向容器注册了一组基础设施PostProcessor */
 	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
@@ -172,7 +189,7 @@ public abstract class AnnotationConfigUtils {
 			 * 2.该后置处理器reader(ConfigurationClassBeanDefinitionReader)的加载(loadBeanDefinitions)工作: {@link ConfigurationClassBeanDefinitionReader#loadBeanDefinitions(Set)}
 			 * 使得所有的手动配置类(例:所有的@compent标注的Bean)全部加载到BeanDefinitionMAp里;
 			 */
-			//硬编码注册BeanDefinition->ConfigurationClassPostProcessor ->registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)
+			// 硬编码注册BeanDefinition->ConfigurationClassPostProcessor ->registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));
