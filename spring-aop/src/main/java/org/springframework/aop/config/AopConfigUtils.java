@@ -133,7 +133,7 @@ public abstract class AopConfigUtils {
 		}
 
 		// 手动 new AnnotationAwareAspectJAutoProxyCreator AOP代理创建器
-		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);//注意这个cls 类型
+		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls); // 注意这个cls 类型 -> AnnotationAwareAspectJAutoProxyCreator
 		beanDefinition.setSource(source);
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE); // 添加属性 order 最高级
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
