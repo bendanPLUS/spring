@@ -274,7 +274,12 @@ public abstract class AnnotationConfigUtils {
 		}
 	}
 
+
 	public static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd) {
+		/**
+		 * 从原始bean定义的元数据中获取那些通用的注解信息：
+		 * @Lazy,@DependsOn,@Role,@Description,然后设置AnnotatedBeanDefinition实例相应的属性
+		 */
 		processCommonDefinitionAnnotations(abd, abd.getMetadata());
 	}
 
