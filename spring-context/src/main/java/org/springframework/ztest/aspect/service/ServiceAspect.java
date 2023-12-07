@@ -1,4 +1,4 @@
-package org.springframework.ztest.aspect;
+package org.springframework.ztest.aspect.service;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
