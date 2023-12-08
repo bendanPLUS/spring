@@ -116,12 +116,16 @@ import org.springframework.util.function.ThrowingSupplier;
  * @see DefaultListableBeanFactory
  * @see BeanDefinitionRegistry
  */
- /* 继承AbstractBeanFactory(对bean增删改的基本逻辑)抽象类的抽象类, 并实现的AutowireCapableBeanFactory接口(拥有了组件的自动装配的逻辑)
+ /* 真正具有创建bean能力的抽象方法
+  继承AbstractBeanFactory(对bean增删改的基本逻辑)抽象类的抽象类, 并实现的AutowireCapableBeanFactory接口(拥有了组件的自动装配的逻辑)
  		AbstractAutowireCapableBeanFactory的核心功能:
  										创建bean的3大步骤:
  														1. 创建bean  createBean方法实现
  														2. 属性注入   populateBean方法实现
  														3. 初始化bean initializeBean方法实现
+ 	最重要的实现 :
+   @see #doCreateBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Object[])
+   继承了AbstractBeanFactory就继承了CreateBean方法
 	*/
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
 		implements AutowireCapableBeanFactory {
