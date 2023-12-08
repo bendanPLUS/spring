@@ -59,7 +59,10 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.factory.config.ConfigurableListableBeanFactory
  * @see org.springframework.context.ApplicationContext#getAutowireCapableBeanFactory()
  */
- // 自动注入bean, 创建bean; 对现有的bean但还未被IOC容器管理的bean 提过自动注入 和 依赖注入  主要功能就是创建createBean
+ // 自动有能力创建bean的工厂, 创建bean; 对现有的bean但还未被IOC容器管理的bean 提过自动注入 和 依赖注入  主要功能就是创建createBean
+
+
+	                 /* 创建bean对象 */
 public interface AutowireCapableBeanFactory extends BeanFactory {
 
 	/**
