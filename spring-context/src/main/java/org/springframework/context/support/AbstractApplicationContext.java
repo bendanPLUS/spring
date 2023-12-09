@@ -584,9 +584,23 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			StartupStep contextRefresh = this.applicationStartup.start("spring.context.refresh");
 
 			// Prepare this context for refreshing.
+			/* 初始化前的预处理 */
 			prepareRefresh();
 
-			// Configurable带有写的功能(添加监听,添加BeanFactory后置处理器...) Tell the subclass to refresh the internal bean factory.
+			// Configurable带有写的功能(添加监听,添加BeanFactory后置处理器等等...) Tell the subclass to refresh the internal bean factory.
+			/** 2.初始化beanFactory 之前已经创建好, 但还没有进行初始化
+			 *  创建的时机: {@link GenericApplicationContext#GenericApplicationContext() 构造函数,创建GenericApplicationContext时}
+			 *  时间序:
+			 *  	1. 创建applicationContext时,{@link org.springframework.boot.SpringApplication#createApplicationContext}
+			 *  根据webtype类型 我们要创建 SERVLET类型的applicationContext, 即(org.springframework.boot."
+			 * 			+ "web.servlet.context.AnnotationConfigServletWebServerApplicationContext)
+			 * 		2.创建它前 要创建它的父类 org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext#ServletWebServerApplicationContext()
+			 * 		3.父类的父类 {@link org.springframework.web.context.support.GenericWebApplicationContext#GenericWebApplicationContext()}
+			 * 		4.父类的父类的父类 {@link GenericApplicationContext#GenericApplicationContext() 构造函数,创建GenericApplicationContext时}
+			 * 		this.beanFactory = new DefaultListableBeanFactory();
+			 * */
+			/* 只是new DefaultListableBeanFactory 但还没有进行初始化操作! 此处就是进行初始化赋值操作 注:注解驱动的 只能进行一次 */
+			/* 2.初始化beanFactory */
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -667,6 +681,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * active flag as well as performing any initialization of property sources.
 	 */
 	protected void prepareRefresh() {
+		/* 标记当前IOC容器已激活 */
 		// Switch to active.
 		this.startupDate = System.currentTimeMillis();
 		this.closed.set(false);
@@ -680,14 +695,16 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				logger.debug("Refreshing " + getDisplayName());
 			}
 		}
-
+		// 初始化属性配置
 		// Initialize any placeholder property sources in the context environment.
 		initPropertySources();
 
+		// 属性校验
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
 		getEnvironment().validateRequiredProperties();
 
+		// 早期监听器的设置
 		// Store pre-refresh ApplicationListeners...
 		if (this.earlyApplicationListeners == null) {
 			this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners);
@@ -698,6 +715,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			this.applicationListeners.addAll(this.earlyApplicationListeners);
 		}
 
+		// 早期事件的集合
 		// Allow for the collection of early ApplicationEvents,
 		// to be published once the multicaster is available...
 		this.earlyApplicationEvents = new LinkedHashSet<>();
@@ -719,6 +737,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see #getBeanFactory()
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		// 基于注解驱动的refreshBeanFactory 只能刷新一次 CAS设置refreshed
 		refreshBeanFactory();
 		return getBeanFactory();
 	}
