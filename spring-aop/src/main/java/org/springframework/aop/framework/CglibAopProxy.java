@@ -667,6 +667,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 	 * General purpose AOP callback. Used when the target is dynamic or when the
 	 * proxy is not frozen.
 	 */
+	/* 动态代理的类 调用方法时会先执行内部类DynamicAdvisedInterceptor的intercept方法 */
 	private static class DynamicAdvisedInterceptor implements MethodInterceptor, Serializable {
 
 		private final AdvisedSupport advised;
@@ -675,6 +676,9 @@ class CglibAopProxy implements AopProxy, Serializable {
 			this.advised = advised;
 		}
 
+		/**
+		 * proxy=代理对象 method=原始类的方法 args=方法参数 methodProxy=被代理的方法
+		 */
 		@Override
 		@Nullable
 		public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
@@ -683,13 +687,21 @@ class CglibAopProxy implements AopProxy, Serializable {
 			Object target = null;
 			TargetSource targetSource = this.advised.getTargetSource();
 			try {
-				if (this.advised.exposeProxy) { // exposeProxy属性设置
+				// 如果在@EnableAspectJAutoProxy注解上配置了exposeProxy属性为true,则会把当前代理对象放在AOP上下文中
+				if (this.advised.exposeProxy) {
 					// Make invocation available if necessary.
 					oldProxy = AopContext.setCurrentProxy(proxy);
 					setProxyContext = true;
 				}
 				// Get as late as possible to minimize the time we "own" the target, in case it comes from a pool...
-				target = targetSource.getTarget(); // 从封装targetSource拿目标对象
+				/**
+				 * 从封装targetSource拿目标对象
+				 * {@link AbstractAutoProxyCreator#wrapIfNecessary(Object, String, Object)}
+				 * 		2.创建代理对象: new SingletonTargetSource(bean)
+				 * 			Object proxy = createProxy(
+				 * 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
+				 */
+				target = targetSource.getTarget();
 				Class<?> targetClass = (target != null ? target.getClass() : null); // 拿目标对象的类型
 				// 1.获取增强器链: 根据当前执行的方法 获取要执行的增强器 并以列表返回 链
 				List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass); // 这里
@@ -707,8 +719,9 @@ class CglibAopProxy implements AopProxy, Serializable {
 				}
 				else {
 					// We need to create a method invocation...
-					// 2.构造增强链, 执行增强器逻辑 ->proceed() 方法 一种递归调用的思想: MethodBeforeAdviceInterceptor AspectJAfterAdvice  invoke()
-					retVal = new CglibMethodInvocation(proxy, target, method, args, targetClass, chain, methodProxy).proceed();
+					// 2.构造增强链, 执行增强器逻辑proceed()方法 一种递归调用的思想: MethodBeforeAdviceInterceptor AspectJAfterAdvice  invoke()
+					retVal = new CglibMethodInvocation(proxy, target, method, args, targetClass, chain, methodProxy)
+							.proceed();
 				}
 				return processReturnType(proxy, target, method, retVal);
 			}

@@ -284,9 +284,12 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		Object cacheKey = getCacheKey(beanClass, beanName);
 		// 决定是否要提前增强当前的bean?
 		if (!StringUtils.hasLength(beanName) || !this.targetSourcedBeans.contains(beanName)) {
-			if (this.advisedBeans.containsKey(cacheKey)) { // 被增强的bean是不会再次被增强的 缓存里有说明已经创建了该代理对象
+			// 被增强的bean是不会再次被增强的 缓存里有说明已经创建了该代理对象
+			if (this.advisedBeans.containsKey(cacheKey)) {
 				return null;
-			} // 基础类的bean不会被提前增强 和 被跳过的bean不会被提前增强
+			}
+			/** {@link org.springframework.aop.aspectj.autoproxy.AspectJAwareAdvisorAutoProxyCreator#shouldSkip(Class, String)}*/
+			// 基础类(例:被@Aspect标注的类为普通类提供增强服务的类)的bean不会被提前增强 和 被跳过的bean不会被提前增强
 			/* 非常重要: shouldSkip会获取程序里所有的增强器 */
 			if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) {
 				this.advisedBeans.put(cacheKey, Boolean.FALSE);
@@ -384,7 +387,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			return bean;
 		}
 		// 如果上面判断都没有成立,则决定是否需要进行代理对象的创建?
-		/*   核心就两步: */
+		/* 核心就两步: */
 		// 1.根据刚刚初始化完成的bean对象 匹配可织入的增强器
 		// Create proxy if we have advice.
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null); // 看这里 标记

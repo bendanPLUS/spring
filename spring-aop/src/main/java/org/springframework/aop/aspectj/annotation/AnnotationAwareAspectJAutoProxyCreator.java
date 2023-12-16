@@ -45,6 +45,12 @@ import org.springframework.util.Assert;
  *
  *  创建的时机: AnnotationAwareAspectJAutoProxyCreator本质还是一个bean的后置处理器,so 肯定在refresh方法里的注册所有BeanPostProcessors时;
  *  {@link org.springframework.context.support.AbstractApplicationContext#registerBeanPostProcessors(ConfigurableListableBeanFactory)}
+ *  作用时机: 在bean初始化阶段对需要增强bean进行干预
+ *  1.重写BeanPostProcessor接口的postProcessAfterInitialization方法
+ *  2.InstantiationAwareBeanPostProcessor
+ *  	.实例化之前是否要提前增强当前的bean?{@link org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator#postProcessBeforeInstantiation(java.lang.Class, java.lang.String)}
+ *  3.SmartInstantiationAwareBeanPostProcessor
+ *  4.AopInfrastructureBean
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -94,10 +100,12 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	@Override
 	protected List<Advisor> findCandidateAdvisors() {
 		// Add all the Spring advisors found according to superclass rules.
-		List<Advisor> advisors = super.findCandidateAdvisors(); // 1.根据父类收集spring所有原生增强器(已经被淘汰)
+		// 1.根据父类收集spring所有原生增强器 (已经被淘汰)
+		List<Advisor> advisors = super.findCandidateAdvisors();
 		// Build Advisors for all AspectJ aspects in the bean factory.
+		// 2.解析AspectJ切面封装的增强器 推荐使用
 		if (this.aspectJAdvisorsBuilder != null) {
-			advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors()); // 2.解析AspectJ切面封装的增强器 推荐使用
+			advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors());
 		}
 		return advisors;
 	}
