@@ -1,6 +1,7 @@
 package org.springframework.ztest;
 
 import org.springframework.beans.factory.support.AbstractBeanFactory;
+import org.springframework.cglib.core.DebuggingClassWriter;
 import org.springframework.context.annotation.*;
 import org.springframework.core.SimpleAliasRegistry;
 import org.springframework.ztest.aspect.service.DemoService;
@@ -21,6 +22,8 @@ public class Main {
 	}
 
 	public static void testAop(AnnotationConfigApplicationContext ctx) {
+		// 本地debug，会在本地生成对应的代理对象文件
+		// System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY,"存放的路径");
 		DemoService bean = ctx.getBean(DemoService.class);
 		bean.save();
 	}
