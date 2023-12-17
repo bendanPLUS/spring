@@ -87,10 +87,11 @@ final class PostProcessorRegistrationDelegate {
 			/* 分成两个集合  BeanDefinitionRegistryPostProcessor集合 和 BeanFactoryPostProcessor集合 */
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>(); // 常规的 (修改和查询)
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>(); // 具有注册BeanDefinition功能的后置处理器
-			// 一.处理方法传入的 List<BeanFactoryPostProcessor> beanFactoryPostProcessors
+			// 一.处理方法传入的 List<BeanFactoryPostProcessor> beanFactoryPostProcessors 就是程序启动时手动new的一些内部重要的后置处理器
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor registryProcessor) {
 					/* 执行最高优先级 程序启动手new的BeanDefinitionRegistryPostProcessor (传入的beanFactoryPostProcessors)*/
+					// 立即执行
 					registryProcessor.postProcessBeanDefinitionRegistry(registry); // BeanDefinitionRegistry的后置处理器会立即执行 , 进行回调处理
 					registryProcessors.add(registryProcessor);
 				}
@@ -106,6 +107,7 @@ final class PostProcessorRegistrationDelegate {
 			// 二.处理 beanFactory通过类型匹配的后置处理器 分为: 1.实现PriorityOrdered接口的(最高优先级)->List currentRegistryProcessors 2.实现Ordered接口的 3.普通的BeanDefinitionRegistry后置处理器
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 			/**
+			 * 在当前的beanDefinitionMap里找实现BeanDefinitionRegistryPostProcessor接口的BeanDefinition
 			 * 实现PriorityOrdered和BeanDefinitionRegistryPostProcessor接口的实现类
 			 * TODO 此处其实找到一个后置处理器,就是大名鼎鼎的 {@link ConfigurationClassPostProcessor} 它是{@link BeanDefinitionRegistryPostProcessor}接口的唯一实现类
 			 */
@@ -114,7 +116,8 @@ final class PostProcessorRegistrationDelegate {
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false); // 遍历beanDefinitionMap集合进行类型匹配
 			for (String ppName : postProcessorNames) {
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) { // 类型匹配 是否实现PriorityOrdered接口?
-					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class)); //创建成Bean 以前是BeanDefinition 通过getBean创建成Bean
+					// 创建成Bean 以前是BeanDefinition 通过getBean创建成Bean
+					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
 			}

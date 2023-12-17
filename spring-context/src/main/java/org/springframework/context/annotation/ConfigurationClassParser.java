@@ -254,8 +254,9 @@ class ConfigurationClassParser {
 			}
 		}
 
+		// 按照层次 递归处理配置类以及它的父类
 		// Recursively process the configuration class and its superclass hierarchy. 前置校验
-		SourceClass sourceClass = asSourceClass(configClass, filter);
+		SourceClass sourceClass = asSourceClass(configClass, filter); // 统一将配置类(带@Configuration注解)封装成SourceClass
 		// 先do后while 根据sourceClass是否为null?来退出循环
 		do { // 真正的解析处理 doXxx()
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter);
@@ -321,6 +322,7 @@ class ConfigurationClassParser {
 					}
 					// 只要是被 @Component @ComponentScan @Import @ImportResource及其派生 标注 都为true @Bean methods也可以
 					if (ConfigurationClassUtils.checkConfigurationClassCandidate(bdCand, this.metadataReaderFactory)) {
+						// 递归
 						// 每一个标记为@Configuration @Component @ComponentScan @Import @ImportResource及其派生注解的类, 都需要递归执行parse方法, 穷尽所有要注册的bean *非常重要*
 						/* 也就是说所有可以被扫描到的类都要经历此步骤 并且注册到:configurationClasses Map */
 						parse(bdCand.getBeanClassName(), holder.getBeanName());
@@ -332,7 +334,7 @@ class ConfigurationClassParser {
 		/* 4.Process any @Import annotations */
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
-		/* 5.Process any @ImportResource annotations 注解驱动IOC的情况下,当需要导入XML文件时,可借助@ImportResource注解 */
+		/* 5.Process any @ImportResource annotations ,当需要导入XML文件时,可借助@ImportResource注解 */
 		AnnotationAttributes importResource =
 				AnnotationConfigUtils.attributesFor(sourceClass.getMetadata(), ImportResource.class);
 		if (importResource != null) {
@@ -350,7 +352,7 @@ class ConfigurationClassParser {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 		}
 
-		// 配置类实现接口默认的方法 Process default methods on interfaces
+		// 配置类实现接口Default的方法 Process default methods on interfaces
 		processInterfaces(configClass, sourceClass);
 
 		// Process superclass, if any

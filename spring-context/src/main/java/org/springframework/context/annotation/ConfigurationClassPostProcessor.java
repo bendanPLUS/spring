@@ -392,7 +392,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			return Integer.compare(i1, i2);
 		});
 
-		// 忽略 Detect any custom bean name generation strategy supplied through the enclosing application context
+		// 自定义的bean name生成策略 Detect any custom bean name generation strategy supplied through the enclosing application context
 		SingletonBeanRegistry sbr = null;
 		if (registry instanceof SingletonBeanRegistry _sbr) {
 			sbr = _sbr;

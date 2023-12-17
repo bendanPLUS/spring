@@ -168,6 +168,7 @@ class ConfigurationClassBeanDefinitionReader {
 		ScopeMetadata scopeMetadata = scopeMetadataResolver.resolveScopeMetadata(configBeanDef);
 		configBeanDef.setScope(scopeMetadata.getScopeName());
 		String configBeanName = this.importBeanNameGenerator.generateBeanName(configBeanDef, this.registry);
+		/* 从原始bean定义的元数据中获取那些通用的注解信息：@Lazy,@DependsOn,@Role,@Description,然后设置AnnotatedBeanDefinition实例相应的属性 */
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(configBeanDef, metadata);
 
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(configBeanDef, configBeanName);
@@ -242,8 +243,9 @@ class ConfigurationClassBeanDefinitionReader {
 		if (metadata instanceof StandardMethodMetadata sam) {
 			beanDef.setResolvedFactoryMethod(sam.getIntrospectedMethod());
 		}
-		//处理Bean的属性+额外的注解
+		// 处理Bean的属性+额外的注解
 		beanDef.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
+		/* 从原始bean定义的元数据中获取那些通用的注解信息：@Lazy,@DependsOn,@Role,@Description,然后设置AnnotatedBeanDefinition实例相应的属性 */
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(beanDef, metadata);
 
 		boolean autowireCandidate = bean.getBoolean("autowireCandidate");

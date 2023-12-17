@@ -261,6 +261,7 @@ public class AnnotatedBeanDefinitionReader {
 		abd.setScope(scopeMetadata.getScopeName());
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
+		/* 从原始bean定义的元数据中获取那些通用的注解信息：@Lazy,@DependsOn,@Role,@Description,然后设置AnnotatedBeanDefinition实例相应的属性 */
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
