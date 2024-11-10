@@ -1967,6 +1967,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 */
 	protected abstract boolean containsBeanDefinition(String beanName);
 
+
+	/*
+	*  模版方法模式： 父类提供逻辑规范，子类提供具体步骤的实现
+	*  getBeanDefinition createBean
+	* */
 	/**
 	 * Return the bean definition for the given bean name.
 	 * Subclasses should normally implement caching, as this method is invoked
