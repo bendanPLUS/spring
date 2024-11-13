@@ -759,11 +759,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// 设置beanFactory的类加载器 表达式解析器
 		beanFactory.setBeanClassLoader(getClassLoader());
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
-		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
+		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment())); // 注册Environment抽象 运行时配置
 
 		/**
 		 * 添加ApplicationContextAwareProcessor处理器 bean的创建时进行扩展点 实例化前的后置处理, 重写set方法 进行相应属性设置
 		 * {@link ApplicationContextAwareProcessor#postProcessBeforeInitialization(Object, String)}
+		 * 负责支持6个Aware回调注入接口 P97
 		 */
 		// Configure the bean factory with context callbacks.
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
