@@ -1024,7 +1024,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// Initialize lifecycle processor for this context. 初始化生命周期处理器
 		initLifecycleProcessor();
 
-		// Propagate refresh to lifecycle processor first. 回调生命周期处理器
+		// Propagate refresh to lifecycle processor first. 回调生命周期处理器 回调所有lifecycle类型的bean的start方法
 		getLifecycleProcessor().onRefresh();
 
 		// Publish the final event. 发布容器刷新完毕事件,触发特定监听
