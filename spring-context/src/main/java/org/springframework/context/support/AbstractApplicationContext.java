@@ -624,6 +624,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 * bean工厂后置处理器的后置 处理
 				 * 最重要的BeanFactory后置处理器:
 				 * {@link ConfigurationClassPostProcessor#processConfigBeanDefinitions(BeanDefinitionRegistry) 非常重要的回调方法}
+				 * {@link PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory, List)}
+				 * 回调执行所有的BeanDefinitionRegistryPostProcessor和BeanFactoryPostProcessor 核心工作就是组件的扫描和注解配置类的解析
 				 */
 				// 5.执行所有的BeanFactory的后置处理器的postProcessBeanDefinitionRegistry方法 注册所有BeanDefinition
 				invokeBeanFactoryPostProcessors(beanFactory);
