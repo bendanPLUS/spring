@@ -614,7 +614,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 * 执行AnnotationConfigServletWebServerApplicationContext类的postProcessBean方法
 				 * bean工厂的后置 处理
 				 * 当前bean工厂DefaultListableBeanFactory的后置处理, 是一个模版方法, 交给子类实现
-				 * {@link org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext}
+				 * {@link org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext} SpringBoot里的类
 				 */
 				postProcessBeanFactory(beanFactory);
 
