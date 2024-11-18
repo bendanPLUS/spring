@@ -747,8 +747,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 		// 基于注解驱动的refreshBeanFactory 只能刷新一次 CAS设置refreshed
-		refreshBeanFactory();
-		return getBeanFactory();
+		refreshBeanFactory();    // 先刷新refreshBeanFactory 再获取getBeanFactory DefaultListableBeanFactory
+		return getBeanFactory(); // 抽象方法 通过子类GenericApplicationContext实现 ->  return this.beanFactory = new DefaultListableBeanFactory();
 	}
 
 	/**
