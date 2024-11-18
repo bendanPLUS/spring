@@ -105,7 +105,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
-  /* ConfigurationClassPostProcessor的核心作用:解析 处理所有被@Configuration标注的配置类,并注册 */
+  /* ConfigurationClassPostProcessor的核心作用:解析 处理所有被@Configuration标注的配置类,并注册BeanDefinition */
 /**
  * {@link BeanFactoryPostProcessor} used for bootstrapping processing of
  * {@link Configuration @Configuration} classes.
