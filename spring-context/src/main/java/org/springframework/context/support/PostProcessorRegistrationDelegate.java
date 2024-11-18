@@ -51,7 +51,7 @@ import org.springframework.core.metrics.StartupStep;
 import org.springframework.lang.Nullable;
 
 /**
- * Delegate for AbstractApplicationContext's post-processor handling.
+ * Delegate for AbstractApplicationContext's post-processor handling. PostProcessorRegistrationDelegate是AbstractApplicationContext委托执行 post-processor 的工具类
  *
  * @author Juergen Hoeller
  * @author Sam Brannen
