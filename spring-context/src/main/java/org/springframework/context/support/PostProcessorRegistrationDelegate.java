@@ -80,7 +80,7 @@ final class PostProcessorRegistrationDelegate {
 		// to ensure that your proposal does not result in a breaking change:
 		// https://github.com/spring-projects/spring-framework/issues?q=PostProcessorRegistrationDelegate+is%3Aclosed+label%3A%22status%3A+declined%22
 
-		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
+		// Invoke BeanDefinitionRegistryPostProcessors first, if any. 防止重复执行
 		Set<String> processedBeans = new HashSet<>();
 
 		if (beanFactory instanceof BeanDefinitionRegistry registry) {  // 注:DefaultListableBeanFactory实现了BeanDefinitionRegistry接口 必定为true
@@ -91,12 +91,12 @@ final class PostProcessorRegistrationDelegate {
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor registryProcessor) {
 					/* 执行最高优先级 程序启动手new的BeanDefinitionRegistryPostProcessor (传入的beanFactoryPostProcessors)*/
-					// 立即执行
+					// 立即执行 具有注册功能的BeanDefinition后置处理器(registryProcessor) 会立即执行
 					registryProcessor.postProcessBeanDefinitionRegistry(registry); // BeanDefinitionRegistry的后置处理器会立即执行 , 进行回调处理
 					registryProcessors.add(registryProcessor);
 				}
 				else {
-					regularPostProcessors.add(postProcessor);
+					regularPostProcessors.add(postProcessor); // 常规的后置处理器， 不会执行
 				}
 			}
 
@@ -115,7 +115,7 @@ final class PostProcessorRegistrationDelegate {
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false); // 遍历beanDefinitionMap集合进行类型匹配
 			for (String ppName : postProcessorNames) {
-				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) { // 类型匹配 是否实现PriorityOrdered接口?
+				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) { // 类型匹配 是否实现PriorityOrdered接口? 1.先处理最高优先级的BeanDefinitionRegistryPostProcessor
 					// 创建成Bean 以前是BeanDefinition 通过getBean创建成Bean
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
@@ -135,7 +135,7 @@ final class PostProcessorRegistrationDelegate {
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered. 重新拿的原因是 有可能新注册进来了BeanDefinitionRegistryPostProcessor类型的后置处理器
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
-				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) { // 类型匹配 是否实现Ordered接口(注解)?
+				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) { // 类型匹配 是否实现Ordered接口(注解)? 1.再处理实现Ordered接口的BeanDefinitionRegistryPostProcessor
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
