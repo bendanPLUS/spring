@@ -331,7 +331,7 @@ class ConfigurationClassParser {
 			}
 		}
 
-		/* 4.Process any @Import annotations */
+		/* 4.Process any @Import annotations 处理@Import注解*/
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
 		/* 5.Process any @ImportResource annotations ,当需要导入XML文件时,可借助@ImportResource注解 */
@@ -516,7 +516,7 @@ class ConfigurationClassParser {
 		}
 		else {
 			this.importStack.push(configClass);
-			try {
+			try { // @Import注解分为四种类型：1.ImportSelector 2.DeferredImportSelector 3.ImportBeanDefinitionRegistrar 4. 普通类/配置类
 				for (SourceClass candidate : importCandidates) {
 					if (candidate.isAssignable(ImportSelector.class)) { //分为两种: 1.实现ImportSelector接口 和 2. 延迟统一处理的DeferredImportSelector
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
@@ -541,7 +541,7 @@ class ConfigurationClassParser {
 							processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false); //递归调用重写selector.selectImports方法返回的Bean
 						}
 					}
-					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) { //候选的配置类是:ImportBeanDefinitionRegistra类型
+					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) { //候选的配置类是:ImportBeanDefinitionRegistrar类型
 						// Candidate class is an ImportBeanDefinitionRegistrar ->
 						// delegate to it to register additional bean definitions
 						Class<?> candidateClass = candidate.loadClass();
