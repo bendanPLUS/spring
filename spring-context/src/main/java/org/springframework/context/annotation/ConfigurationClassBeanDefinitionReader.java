@@ -165,17 +165,17 @@ class ConfigurationClassBeanDefinitionReader {
 	 */
 	private void registerBeanDefinitionForImportedConfigurationClass(ConfigurationClass configClass) {
 		AnnotationMetadata metadata = configClass.getMetadata();
-		AnnotatedGenericBeanDefinition configBeanDef = new AnnotatedGenericBeanDefinition(metadata);
+		AnnotatedGenericBeanDefinition configBeanDef = new AnnotatedGenericBeanDefinition(metadata); // 构造注解形式的BeanDefinition
 
 		ScopeMetadata scopeMetadata = scopeMetadataResolver.resolveScopeMetadata(configBeanDef);
-		configBeanDef.setScope(scopeMetadata.getScopeName());
-		String configBeanName = this.importBeanNameGenerator.generateBeanName(configBeanDef, this.registry);
+		configBeanDef.setScope(scopeMetadata.getScopeName()); // 作用域
+		String configBeanName = this.importBeanNameGenerator.generateBeanName(configBeanDef, this.registry); // 生成bean名称
 		/* 从原始bean定义的元数据中获取那些通用的注解信息：@Lazy,@DependsOn,@Role,@Description,然后设置AnnotatedBeanDefinition实例相应的属性 */
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(configBeanDef, metadata);
 
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(configBeanDef, configBeanName);
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
-		this.registry.registerBeanDefinition(definitionHolder.getBeanName(), definitionHolder.getBeanDefinition());
+		this.registry.registerBeanDefinition(definitionHolder.getBeanName(), definitionHolder.getBeanDefinition()); // 注册到 beanDefinitionMap中
 		configClass.setBeanName(configBeanName);
 
 		if (logger.isTraceEnabled()) {
