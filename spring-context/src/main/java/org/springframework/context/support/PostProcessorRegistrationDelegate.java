@@ -258,7 +258,7 @@ final class PostProcessorRegistrationDelegate {
 		List<String> nonOrderedPostProcessorNames = new ArrayList<>();//4.普通的
 		for (String ppName : postProcessorNames) {
 			if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
-				BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
+				BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class); // 注：PriorityOrdered类型的后置处理器被提前初始化
 				priorityOrderedPostProcessors.add(pp);
 				//MergedBeanDefinitionPostProcessor类型的后置处理器单独放在一个集合里 说明比较特殊
 				if (pp instanceof MergedBeanDefinitionPostProcessor) {
