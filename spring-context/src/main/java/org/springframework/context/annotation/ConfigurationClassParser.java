@@ -346,7 +346,7 @@ class ConfigurationClassParser {
 			}
 		}
 
-		/* 6.Process individual @Bean methods 会扫描到所有标记@Bean的方法 */
+		/* 6.Process individual @Bean methods 会扫描到标记@Bean的方法 */
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));

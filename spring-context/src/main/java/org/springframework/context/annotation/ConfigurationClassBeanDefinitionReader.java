@@ -136,7 +136,7 @@ class ConfigurationClassBeanDefinitionReader {
 			this.importRegistry.removeImportingClass(configClass.getMetadata().getClassName());
 			return;
 		}
-		/** P181(1)注册配置类:如果当前类被@Import标注,则要把该类自身注册到 {@link DefaultListableBeanFactory#beanDefinitionMap}
+		/** P181(1)注册配置类:如果当前类被@Import标注的,则要把该类自身注册到 {@link DefaultListableBeanFactory#beanDefinitionMap}
 		 * {@link DefaultListableBeanFactory#registerBeanDefinition(String, BeanDefinition)}
 		 * */
 		if (configClass.isImported()) {
@@ -149,7 +149,7 @@ class ConfigurationClassBeanDefinitionReader {
 
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources()); // 注册来自XML中的Bean
 		/**
-		 * 这里进行了统一处理
+		 * 这里进行了统一处理 ImportBeanDefinitionRegistrar
 		 * 1.先收集了所有 Implementation {@link ImportBeanDefinitionRegistrar}接口的类: {@link ConfigurationClassParser#processImports : {@link ConfigurationClass#addImportBeanDefinitionRegistrar} }
 		 * 2.在此处通过执行回调的方法{@link ImportBeanDefinitionRegistrar#registerBeanDefinitions(AnnotationMetadata, BeanDefinitionRegistry, BeanNameGenerator)} 注册BeanDefinition
 		 * 一个典型的案例就是: 开启AOP开关注解 {@link EnableAspectJAutoProxy @Import:{@link AspectJAutoProxyRegistrar#registerBeanDefinitions}}
