@@ -627,10 +627,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 * {@link PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory, List)}
 				 * 回调执行所有的BeanDefinitionRegistryPostProcessor和BeanFactoryPostProcessor 核心工作就是组件的扫描和注解配置类的解析
 				 */
-				// 5.执行所有的BeanFactory的后置处理器的postProcessBeanDefinitionRegistry方法 注册所有BeanDefinition
+				// 5.执行所有的BeanFactory的后置处理器的postProcessBeanDefinitionRegistry方法 注册所有BeanDefinition P164
 				invokeBeanFactoryPostProcessors(beanFactory);
 
-				// 6.注册Bean后置处理器 Register bean processors that intercept bean creation.
+				// 6.注册Bean后置处理器 Register bean processors that intercept bean creation. P185
 				registerBeanPostProcessors(beanFactory);
 				beanPostProcess.end();
 

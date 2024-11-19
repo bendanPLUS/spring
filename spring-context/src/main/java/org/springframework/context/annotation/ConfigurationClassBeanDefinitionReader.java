@@ -192,7 +192,7 @@ class ConfigurationClassBeanDefinitionReader {
 		MethodMetadata metadata = beanMethod.getMetadata();
 		String methodName = metadata.getMethodName();
 
-		// Do we need to mark the bean as skipped by its condition?  如果是条件装配则将其跳过
+		// Do we need to mark the bean as skipped by its condition? 如果是条件装配则将其跳过！！！ 直接return了
 		if (this.conditionEvaluator.shouldSkip(metadata, ConfigurationPhase.REGISTER_BEAN)) {
 			configClass.skippedBeanMethods.add(methodName);
 			return;
@@ -208,7 +208,7 @@ class ConfigurationClassBeanDefinitionReader {
 		List<String> names = new ArrayList<>(Arrays.asList(bean.getStringArray("name")));
 		String beanName = (!names.isEmpty() ? names.remove(0) : methodName);
 
-		// Register aliases even when overridden
+		// Register aliases even when overridden 设置beanName别名集合(aliasMap) 覆盖
 		for (String alias : names) {
 			this.registry.registerAlias(beanName, alias);
 		}
@@ -226,7 +226,7 @@ class ConfigurationClassBeanDefinitionReader {
 		ConfigurationClassBeanDefinition beanDef = new ConfigurationClassBeanDefinition(configClass, metadata, beanName);
 		beanDef.setSource(this.sourceExtractor.extractSource(metadata, configClass.getResource()));
 
-		if (metadata.isStatic()) { // 如果是静态方法
+		if (metadata.isStatic()) { // 如果是静态方法? 解析@Bean所在方法的修饰符
 			// static @Bean method
 			if (configClass.getMetadata() instanceof StandardAnnotationMetadata sam) {
 				beanDef.setBeanClass(sam.getIntrospectedClass());
