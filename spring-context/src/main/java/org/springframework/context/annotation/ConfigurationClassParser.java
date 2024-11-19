@@ -516,7 +516,7 @@ class ConfigurationClassParser {
 		}
 		else {
 			this.importStack.push(configClass);
-			try { // @Import注解分为四种类型：1.ImportSelector 2.DeferredImportSelector 3.ImportBeanDefinitionRegistrar 4. 普通类/配置类
+			try { // @Import注解分为四种类型：1.ImportSelector selector.selectImports  2.DeferredImportSelector 3.ImportBeanDefinitionRegistrar 4. 普通类/配置类
 				for (SourceClass candidate : importCandidates) {
 					if (candidate.isAssignable(ImportSelector.class)) { //分为两种: 1.实现ImportSelector接口 和 2. 延迟统一处理的DeferredImportSelector
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
@@ -529,7 +529,7 @@ class ConfigurationClassParser {
 						}
 						if (selector instanceof DeferredImportSelector deferredImportSelector) { // 2.Deferred执行时机延后
 							/**
-							 * 先加入 最后统一处理
+							 * 先加入(收集)  最后统一处理
 							 * 处理的时机:
 							 * {@link ConfigurationClassParser#parse(Set<>) this.deferredImportSelectorHandler.process()}
 							 */
