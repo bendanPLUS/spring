@@ -136,8 +136,10 @@ class ConfigurationClassBeanDefinitionReader {
 			this.importRegistry.removeImportingClass(configClass.getMetadata().getClassName());
 			return;
 		}
-		/** P181(1)注册配置类:如果当前类被@Import标注的,则要把该类自身注册到 {@link DefaultListableBeanFactory#beanDefinitionMap}
-		 * {@link DefaultListableBeanFactory#registerBeanDefinition(String, BeanDefinition)}
+		/** P181(1)注册配置类:
+		 * 如果当前类被@Import标注的,则要把该类自身注册到(BeanDefinitionRegistry的beanDefinitionMap中)
+		 *        	{@link DefaultListableBeanFactory#beanDefinitionMap}
+		 *          	{@link DefaultListableBeanFactory#registerBeanDefinition(String, BeanDefinition)}
 		 * */
 		if (configClass.isImported()) {
 			registerBeanDefinitionForImportedConfigurationClass(configClass);
