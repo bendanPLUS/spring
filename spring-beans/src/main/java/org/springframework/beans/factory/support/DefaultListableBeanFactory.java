@@ -965,7 +965,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		for (String beanName : beanNames) {
 			// 先合并BeanDefinition 合并父类的BeanDefinition
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
-			// 不是抽象的 非延时的  单例Bean进行getBean初始化
+			// 非抽象+非延时+单例的 Bean进行getBean进行初始化
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
 				/**
 				 * 通过传入的name来确定createBean的对象
