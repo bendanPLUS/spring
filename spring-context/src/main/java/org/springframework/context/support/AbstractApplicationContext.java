@@ -904,7 +904,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			}
 		}
 		else {
-			this.applicationEventMulticaster = new SimpleApplicationEventMulticaster(beanFactory);
+			this.applicationEventMulticaster = new SimpleApplicationEventMulticaster(beanFactory); // 算是写死 ioc容器的事件广播器为SimpleApplicationEventMulticaster
 			beanFactory.registerSingleton(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, this.applicationEventMulticaster);
 			if (logger.isTraceEnabled()) {
 				logger.trace("No '" + APPLICATION_EVENT_MULTICASTER_BEAN_NAME + "' bean, using " +
