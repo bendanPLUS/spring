@@ -989,7 +989,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					}
 				}
 				else {
-					//2.普通的bean直接走这里
+					//2.普通的bean直接走这里 项目定义所有的单实例bean在都会被挨个创建和初始化
 					getBean(beanName);
 				}
 			}
