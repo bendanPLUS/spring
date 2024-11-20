@@ -647,7 +647,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				onRefresh();
 
 				// Check for listener beans and register them.
-				// 10.注册监听器
+				// 10.注册监听器 将监听器注册到IOC容器的事件广播器(ApplicationEventMulticaster)中，但并没有初始化监听器对象
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
