@@ -247,7 +247,7 @@ final class PostProcessorRegistrationDelegate {
 		// a bean is not eligible for getting processed by all BeanPostProcessors.
 		/* 从此处可以看出BeanPostProcessor来源有三处:1.beanFactory属性里存的 2.BeanDefinitionMap里存的 3.刚刚new的BeanPostProcessorChecker*/
 		int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length;
-		//此处先注册一个BeanPostProcessorChecker类型的后置处理器
+		//此处先注册一个BeanPostProcessorChecker类型的后置处理器 后置处理器检测器(Checker)
 		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));
 
 		// Separate between BeanPostProcessors that implement PriorityOrdered,
@@ -308,7 +308,7 @@ final class PostProcessorRegistrationDelegate {
 		registerBeanPostProcessors(beanFactory, internalPostProcessors);
 
 		// Re-register post-processor for detecting inner beans as ApplicationListeners,
-		// moving it to the end of the processor chain (for picking up proxies etc).
+		// moving it to the end of the processor chain (for picking up proxies etc).  存在重复添加的问题， beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this)); 但bean后置处理的添加是 先删除 在添加 this.beanPostProcessors.remove(beanPostProcessor); this.beanPostProcessors.add(beanPostProcessor);
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(applicationContext)); //P186 手动注册ApplicationListenerDetector
 	}
 

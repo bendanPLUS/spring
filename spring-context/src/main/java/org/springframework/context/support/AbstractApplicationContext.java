@@ -791,7 +791,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.registerResolvableDependency(ApplicationContext.class, this);
 
 		// Register early post-processor for detecting inner beans as ApplicationListeners.
-		// 添加一个bean的后置处理器(postProcessAfterInitialization), 判断bean是否是ApplicationListener类型,如果是进行特殊处理
+		// 添加一个bean的后置处理器(postProcessAfterInitialization), 判断bean是否是ApplicationListener类型,如果是进行特殊处理 这里存在一个重复添加，org.springframework.context.support.PostProcessorRegistrationDelegate.registerBeanPostProcessors() 最后
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
 		// 增加对 aspect J的支持
