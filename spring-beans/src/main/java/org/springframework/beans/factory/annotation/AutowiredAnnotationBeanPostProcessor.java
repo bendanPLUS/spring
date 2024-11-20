@@ -149,7 +149,7 @@ import org.springframework.util.StringUtils;
  * @since 2.5
  * @see #setAutowiredAnnotationType
  * @see Autowired
-// * @see Value  处理Bean对象上 @Autowired 和 @Value注解 的 bean的后置处理器
+ * @see Value  处理Bean对象上 @Autowired 和 @Value注解 的 bean的后置处理器
  */
 public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationAwareBeanPostProcessor,
 		MergedBeanDefinitionPostProcessor, BeanRegistrationAotProcessor, PriorityOrdered, BeanFactoryAware {
