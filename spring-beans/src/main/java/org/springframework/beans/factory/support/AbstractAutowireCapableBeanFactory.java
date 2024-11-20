@@ -1432,7 +1432,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				if (!bp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
-					return;
+					return; // InstantiationAwareBeanPostProcessor的postProcessAfterInstantiation方法可以决定当前bean对象是否要继续执行IOC容器默认的属性赋值和依赖注入逻辑是否执行
 				}
 			}
 		}
