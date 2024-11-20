@@ -315,7 +315,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			if (!typeCheckOnly) {
-				// 把当前的beanName 放入正在创建的Bean集合中(该Bean标记为正在创建) 且加锁
+				// 把当前的beanName 放入正在创建的Bean集合中(该Bean标记为正在创建)  此处是个双重检验锁设计
 				markBeanAsCreated(beanName);
 			}
 
