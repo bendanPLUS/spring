@@ -67,6 +67,7 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.beans.factory.DisposableBean
  * @see org.springframework.beans.factory.config.ConfigurableBeanFactory
  * @since 2.0
+ * Registry 一个单例bean对象管理的容器 是DefaultListableBeanFactory的父类
  */
 public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements SingletonBeanRegistry {
 
