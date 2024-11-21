@@ -1160,7 +1160,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Nullable
 	protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
 		for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
-			Object result = bp.postProcessBeforeInstantiation(beanClass, beanName);
+			Object result = bp.postProcessBeforeInstantiation(beanClass, beanName); // InstantiationAwareBeanPostProcessor后置处理器的postProcessBeforeInstantiation方法作用是 在bean实例化前拦截bean对象的实例化动作，通过执行InstantiationAwareBeanPostProcessor后置处理器的postProcessBeforeInstantiation方法来实现替代创建
 			if (result != null) {
 				return result;
 			}
