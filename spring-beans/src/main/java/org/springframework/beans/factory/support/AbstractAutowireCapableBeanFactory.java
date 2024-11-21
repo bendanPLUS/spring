@@ -1457,7 +1457,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (pvs == null) {
 				pvs = mbd.getPropertyValues();
 			}
-			// 依赖注入 @Autowired 注入 Person
+			// 依赖注入 @Autowired 注入 Person ->AutowiredAnnotationBeanPostProcessor
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				PropertyValues pvsToUse = bp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName); // 最终生成一个PropertyValues对象
 				if (pvsToUse == null) {
@@ -1801,17 +1801,17 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #applyBeanPostProcessorsAfterInitialization
 	 */
 	protected Object initializeBean(String beanName, Object bean, @Nullable RootBeanDefinition mbd) {
-		// 如果实现的Aware相关接口 在此处进行回调 BeanNameAware BeanClassLoaderAware BeanFactoryAware  进行set
+		// 1.如果实现的Aware相关接口 在此处进行回调 BeanNameAware BeanClassLoaderAware BeanFactoryAware  进行set
 		invokeAwareMethods(beanName, bean);
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
-			// 执行初始化前的后置处理器 前置回调
+			// 2.执行初始化前的后置处理器 前置回调
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
 		try {
-			// init方法+ (如果实现InitializingBean并重写afterPropertiesSet() ,执行afterPropertiesSet() 再执行init()方法)
+			// 3.init方法+ (如果实现InitializingBean并重写afterPropertiesSet() ,执行afterPropertiesSet() 再执行init()方法)
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {
@@ -1819,7 +1819,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					(mbd != null ? mbd.getResourceDescription() : null), beanName, ex.getMessage(), ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
-			// 执行初始化后的后置方法 后置回调
+			// 4.执行初始化后的后置方法 后置回调
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 

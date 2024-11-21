@@ -134,7 +134,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 		Map<Integer, LifecycleGroup> phases = new TreeMap<>();
 
 		lifecycleBeans.forEach((beanName, bean) -> {
-			if (!autoStartupOnly || (bean instanceof SmartLifecycle smartLifecycle && smartLifecycle.isAutoStartup())) {
+			if (!autoStartupOnly || (bean instanceof SmartLifecycle smartLifecycle && smartLifecycle.isAutoStartup())) { // 需要实现Lifecycle的子接口SmartLifecycle 才能实现start方法的自动回调
 				int phase = getPhase(bean);
 				phases.computeIfAbsent(
 						phase,
