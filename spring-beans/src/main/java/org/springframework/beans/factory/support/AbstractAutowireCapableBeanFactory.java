@@ -1458,7 +1458,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (pvs == null) {
 				pvs = mbd.getPropertyValues();
 			}
-			// 依赖注入 @Autowired 注入 Person ->AutowiredAnnotationBeanPostProcessor
+			/* 第五个扩展点 依赖注入 @Autowired 注入 Person ->AutowiredAnnotationBeanPostProcessor 对属性反射注入 PropertyValues值进行封装赋值*/
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				PropertyValues pvsToUse = bp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName); // 最终生成一个PropertyValues对象
 				if (pvsToUse == null) {
