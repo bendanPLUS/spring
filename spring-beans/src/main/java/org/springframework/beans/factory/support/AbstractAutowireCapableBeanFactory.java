@@ -1225,7 +1225,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Candidate constructors for autowiring?
-		//回调实现SmartInstantiationAwareBeanPostProcessor的后置处理器,寻找构造方法
+		/* 注：没有被使用 */
+		// 第二个扩展点：回调实现SmartInstantiationAwareBeanPostProcessor的后置处理器,寻找构造方法 作用：如果对象存在多个构造函数，选择合适的构造函数由此扩张点的后置处理器完成
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
