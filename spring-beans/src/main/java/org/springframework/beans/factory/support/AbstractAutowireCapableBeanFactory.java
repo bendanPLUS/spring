@@ -638,6 +638,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (earlySingletonExposure) {
+			/* 单例bean在populateBean和initializeBean后加入二级缓存Map<String, Object> earlySingletonObjects中 */
 			// 存放到二级缓存 如果是循环依赖情况 ?
 			Object earlySingletonReference = getSingleton(beanName, false);
 			if (earlySingletonReference != null) {
