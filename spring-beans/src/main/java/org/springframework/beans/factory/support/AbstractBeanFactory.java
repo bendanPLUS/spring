@@ -354,6 +354,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// Create bean instance.
 				// 单例创建Bean实例 getSingleton(加锁+1缓存有?+标记+真正创建+删标记+加缓存);  真正创建:ObjectFactory.getObject()(createBean)
 				if (mbd.isSingleton()) {
+					/* createBean完成以后 通过getSingleton方法实现 一级缓存Map<String, Object> singletonObjects的加入 */
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							return createBean(beanName, mbd, args);
