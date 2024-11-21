@@ -144,7 +144,7 @@ import org.springframework.util.ReflectionUtils;
  *  一个非常重要的实现:refresh() 它是ApplicationContext生命周期的核心方法,13步,包含了应用上下文所有重要步骤的处理
  *  书中用一整章的方式只讲这个AbstractApplicationContext的refresh()方法 可见其重要性
  */
-public abstract class AbstractApplicationContext extends DefaultResourceLoader
+public abstract class AbstractApplicationContext extends DefaultResourceLoader // 这么重要的抽象类，只能有一个继承类居然是DefaultResourceLoader！
 		implements ConfigurableApplicationContext {
 
 	/**
