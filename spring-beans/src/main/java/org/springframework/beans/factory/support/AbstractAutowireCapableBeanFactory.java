@@ -1429,7 +1429,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Give any InstantiationAwareBeanPostProcessors the opportunity to modify the
 		// state of the bean before properties are set. This can be used, for example,
 		// to support styles of field injection.
-		// 在属性赋值+依赖注入之前 先调用后置处理器 :InstantiationAwareBeanPostProcessor->postProcessAfterInstantiation
+		/* 第四个扩张点 ：在属性赋值+依赖注入之前 先调用后置处理器 :InstantiationAwareBeanPostProcessor->postProcessAfterInstantiation 决定当前bean对象是否要继续执行IOC容器默认的属性赋值和依赖注入逻辑是否继续执行还是return*/
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				if (!bp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
