@@ -1807,7 +1807,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
-			// 2.执行初始化前的后置处理器 前置回调
+			/* 第六个扩展点 2.执行初始化前的后置处理器 前置回调  给bean对象添加一些额外的属性赋值，回调以及生命周期的代理*/
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
