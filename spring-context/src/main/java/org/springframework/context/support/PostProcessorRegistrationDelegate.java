@@ -64,7 +64,7 @@ final class PostProcessorRegistrationDelegate {
 	}
 
 	// 执行BeanFactory的后置处理器
-	public static void invokeBeanFactoryPostProcessors(
+	public static void  invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
 		// WARNING: Although it may appear that the body of this method can be easily
@@ -91,7 +91,7 @@ final class PostProcessorRegistrationDelegate {
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor registryProcessor) {
 					/* 执行最高优先级 程序启动手new的BeanDefinitionRegistryPostProcessor (传入的beanFactoryPostProcessors)*/
-					// 立即执行 具有注册功能的BeanDefinition后置处理器(registryProcessor) 会立即执行
+					// 立即执行 具有注册功能的BeanDefinition后置处理器(registryProcessor) 会立即执行  新建手动 new BeanDefinition并且注册到DefaultListableBeanFactory的beanDefinitionMap缓存中 示例：org.springframework.boot.autoconfigure.SharedMetadataReaderFactoryContextInitializer.CachingMetadataReaderFactoryPostProcessor#postProcessBeanDefinitionRegistry
 					registryProcessor.postProcessBeanDefinitionRegistry(registry); // BeanDefinitionRegistry的后置处理器会立即执行 , 进行回调处理
 					registryProcessors.add(registryProcessor);
 				}
