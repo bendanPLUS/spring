@@ -221,7 +221,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 		// 获取解析切入点表达式
 		AspectJExpressionPointcut expressionPointcut = getPointcut(
 				candidateAdviceMethod, aspectInstanceFactory.getAspectMetadata().getAspectClass());
-		// 没有声明通知注解的方法 return null;
+		// 没有声明通知注解的方法 return null; 即普通方法会被过滤掉
 		if (expressionPointcut == null) {
 			return null;
 		}
