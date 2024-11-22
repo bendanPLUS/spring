@@ -109,7 +109,7 @@ final class PostProcessorRegistrationDelegate {
 			/**
 			 * 在当前的beanDefinitionMap里找实现BeanDefinitionRegistryPostProcessor接口的BeanDefinition
 			 * 实现PriorityOrdered和BeanDefinitionRegistryPostProcessor接口的实现类
-			 * TODO 此处其实找到一个后置处理器,就是大名鼎鼎的 {@link ConfigurationClassPostProcessor} 它是{@link BeanDefinitionRegistryPostProcessor}接口的唯一实现类
+			 * TODO 此处其实找到一个后置处理器,就是大名鼎鼎的 {@link ConfigurationClassPostProcessor} 它是{@link BeanDefinitionRegistryPostProcessor}接口的实现类
 			 * {@link org.springframework.context.annotation.AnnotationConfigUtils#registerAnnotationConfigProcessors(BeanDefinitionRegistry, Object)}
 			 */
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered. 实现BeanDefinitionRegistryPostProcessor接口代表具有注册BeanDefinition能力
