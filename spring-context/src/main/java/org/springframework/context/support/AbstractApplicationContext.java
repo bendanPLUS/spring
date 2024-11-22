@@ -838,7 +838,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader /
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 		// Delegate 委托 代理 委派 代表
 		// PostProcessorRegistrationDelegate是AbstractApplicationContext委托执行post processors任务的工具类
-		// 此处getBeanFactoryPostProcessors获取的工厂的后置处理器都是手new出来的
+		// 此处getBeanFactoryPostProcessors获取的工厂的后置处理器都是手new出来的                                 三个后置处理器：1.org.springframework.boot.autoconfigure.SharedMetadataReaderFactoryContextInitializer#initialize 2.org.springframework.boot.context.ConfigurationWarningsApplicationContextInitializer#initialize 3. org.springframework.boot.context.config.ConfigFileApplicationListener#onApplicationEvent context.addBeanFactoryPostProcessor(new PropertySourceOrderingPostProcessor(context));
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors()); //注:此处是传入编程注入(手new的)的BeanFactoryPostProcessors 例:类ConfigurationWarningsApplicationContextInitializer的initialize方法
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
