@@ -87,7 +87,7 @@ final class PostProcessorRegistrationDelegate {
 			/* 分成两个集合  BeanDefinitionRegistryPostProcessor集合 和 BeanFactoryPostProcessor集合 */
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>(); // 常规的 (修改和查询)
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>(); // 具有注册BeanDefinition功能的后置处理器
-			// 一.处理方法传入的 List<BeanFactoryPostProcessor> beanFactoryPostProcessors 就是程序启动时手动new的一些内部重要的后置处理器
+			// 一.处理IOC容器AbstractApplicationContext.beanFactoryPostProcessors list里的后置处理器集合 就是程序启动时手动new的一些内部重要的后置处理器集合
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor registryProcessor) {
 					/* 执行最高优先级 程序启动手new的BeanDefinitionRegistryPostProcessor (传入的beanFactoryPostProcessors)*/
@@ -112,7 +112,7 @@ final class PostProcessorRegistrationDelegate {
 			 * TODO 此处其实找到一个后置处理器,就是大名鼎鼎的 {@link ConfigurationClassPostProcessor} 它是{@link BeanDefinitionRegistryPostProcessor}接口的实现类
 			 * {@link org.springframework.context.annotation.AnnotationConfigUtils#registerAnnotationConfigProcessors(BeanDefinitionRegistry, Object)}
 			 */
-			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered. 实现BeanDefinitionRegistryPostProcessor接口代表具有注册BeanDefinition能力
+			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered. 处理DefaultListableBeanFactory的beanDefinitionNames的后置处理器 实现BeanDefinitionRegistryPostProcessor接口代表具有注册BeanDefinition能力
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false); // 遍历beanDefinitionMap集合进行类型匹配
 			for (String ppName : postProcessorNames) {
