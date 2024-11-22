@@ -393,7 +393,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null); // 看这里 标记
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE); // 加入缓存 该bean为增强bean true
-			/* 注:将bean封装成了单例的 TargetSource  _> new SingletonTargetSource(bean) AOP代理的其实不是目标对象本身,而是TargetSource对象  每次调用SingletonTargetSource.getTarget方法返回的都是同一个bean 静态 */
+			/* 注:将bean封装成了单例的 TargetSource  -> new SingletonTargetSource(bean) AOP代理的其实不是目标对象本身,而是TargetSource对象  每次调用SingletonTargetSource.getTarget方法返回的都是同一个bean 静态 */
 			// 2.创建代理对象
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
