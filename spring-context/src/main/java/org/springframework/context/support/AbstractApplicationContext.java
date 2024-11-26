@@ -643,7 +643,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader /
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
-				// 9.供子类扩展的模版方法 ,留给子类来初始化其他bean
+				// 9.供子类扩展的模版方法 ,留给子类来初始化其他bean   -->  ServletWebServerApplicationContext 触发Tomcat Web容器的初始化(createWebServer)
 				onRefresh();
 
 				// Check for listener beans and register them.
