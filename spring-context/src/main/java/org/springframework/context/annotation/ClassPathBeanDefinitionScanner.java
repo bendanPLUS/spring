@@ -290,7 +290,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 				if (checkCandidate(beanName, candidate)) { //检测下beanDefinitionMap里是否存在? 不存在就注册registerBeanDefinition(definitionHolder, this.registry);
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName); // 设置完BeanDefinition信息
 					definitionHolder =
-							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry); //  AOP属性相关的属性
+							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry); // AOP属性相关的属性
 					beanDefinitions.add(definitionHolder);
 					// 将BeanDefinition注册到BeanDefinitionRegistry(DefaultListableBeanFactory) beanDefinitionMap中 this.beanDefinitionMap.put(beanName, beanDefinition);
 					registerBeanDefinition(definitionHolder, this.registry); /* 注册BeanDefinition */
