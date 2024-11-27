@@ -437,7 +437,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 				try {
 					MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
 					// 这里只添加标注为@Component注解及其衍生注解 的bean
-					if (isCandidateComponent(metadataReader)) {
+					if (isCandidateComponent(metadataReader)) { // mybatis 扫描mapper时 ClassPathMapperScanner重写了isCandidateComponent方法
 						ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 						sbd.setSource(resource);
 						if (isCandidateComponent(sbd)) {
