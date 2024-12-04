@@ -1493,7 +1493,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void autowireByName(
 			String beanName, AbstractBeanDefinition mbd, BeanWrapper bw, MutablePropertyValues pvs) {
 
-		String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw);
+		String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw); // 寻找bw依赖的属性  举例：userMapper(被封装成MapperFactoryBean)  创建userMapper Bean 前可以解析到需要依赖:"sqlSessionFactory" "sqlSessionTemplate"两个对象 需要先创建
 		for (String propertyName : propertyNames) {
 			if (containsBean(propertyName)) {
 				Object bean = getBean(propertyName);
