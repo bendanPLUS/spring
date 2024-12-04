@@ -1822,7 +1822,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					(mbd != null ? mbd.getResourceDescription() : null), beanName, ex.getMessage(), ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
-			// 4.执行初始化后的后置方法 后置回调
+			// 4.执行初始化后的后置方法 后置回调 经典的后置处理器代表：AOP核心AnnotationAwareAspectJAutoProxyCreator
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 
