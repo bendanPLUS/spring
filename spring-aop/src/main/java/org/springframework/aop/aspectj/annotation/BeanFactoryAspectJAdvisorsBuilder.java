@@ -82,7 +82,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	 */
 	public List<Advisor> buildAspectJAdvisors() {
 		List<String> aspectNames = this.aspectBeanNames;
-		// 双重检验锁 spectBeanNames加到缓存里, 只有第一次进行逻辑处理 以后都是 从缓存里取
+		// 双重检验锁 aspectBeanNames加到缓存里, 只有第一次进行逻辑处理 以后都是 从缓存里取
 		if (aspectNames == null) {
 			synchronized (this) { //加锁
 				aspectNames = this.aspectBeanNames;
