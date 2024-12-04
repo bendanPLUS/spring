@@ -103,8 +103,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 						if (beanType == null) {
 							continue;
 						}
-						//判断一个Class是否是通知类(1.是否有@Aspect注解标记 + 2.是否被ajc编译)
-						//也可以叫 切面类
+						// 判断一个Class是否是切面类(1.类上是否有@Aspect注解标记 + 2.是否被ajc编译)
 						if (this.advisorFactory.isAspect(beanType)) {
 							aspectNames.add(beanName);
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
