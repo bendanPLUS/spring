@@ -133,7 +133,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 				new LazySingletonAspectInstanceFactoryDecorator(aspectInstanceFactory);
 
 		List<Advisor> advisors = new ArrayList<>();
-		/* 获取切面所有的通知方法(getAdvisorMethods) 遍历所有通知方法 */
+		/* 获取切面类 所有的方法 (只排除标注@Pointcut注解的方法)  遍历切面类所有的方法 */
 		for (Method method : getAdvisorMethods(aspectClass)) {
 			// Prior to Spring Framework 5.2.7, advisors.size() was supplied as the declarationOrderInAspect
 			// to getAdvisor(...) to represent the "current position" in the declared methods list.
@@ -143,7 +143,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 			// discovered via reflection in order to support reliable advice ordering across JVM launches.
 			// Specifically, a value of 0 aligns with the default value used in
 			// AspectJPrecedenceComparator.getAspectDeclarationOrder(Advisor).
-			/* 封装成增强器 */
+			/* 封装成增强器  此处会有一层过滤 没有声明通知注解的方法 return null(即普通方法会被过滤掉) */
 			Advisor advisor = getAdvisor(method, lazySingletonAspectInstanceFactory, 0, aspectName); //逐个解析通知方法并封装成Advisor(增强器)
 			if (advisor != null) {
 				advisors.add(advisor);
@@ -180,10 +180,10 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 			}
 		}, ReflectionUtils.USER_DECLARED_METHODS);
 		*/
-		// 代码的升级 把这个排除掉@Pointcut注解的方法放到了 方法的过滤条件里 ,然后直接用函数式接口进行匹配
+		// 代码的升级 把这个排除掉@Pointcut注解的方法放到了 方法的过滤条件(adviceMethodFilter)里 ,然后直接用函数式接口进行匹配
 		ReflectionUtils.doWithMethods(aspectClass, methods::add, adviceMethodFilter);
 		if (methods.size() > 1) {
-			methods.sort(adviceMethodComparator); // 排序
+			methods.sort(adviceMethodComparator); // 排序 这个排序很重要， 是先根据Around Before After AfterReturning AfterThrowing排序， 如果出现相同(如两个@Around)的再根据方法名自然排序， 这个排序决定了执行的先后顺序
 		}
 		return methods;
 	}
@@ -218,7 +218,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 			int declarationOrderInAspect, String aspectName) {
 
 		validate(aspectInstanceFactory.getAspectMetadata().getAspectClass());
-		// 获取解析切入点表达式
+		// 获取解析切入点表达式 Pointcut
 		AspectJExpressionPointcut expressionPointcut = getPointcut(
 				candidateAdviceMethod, aspectInstanceFactory.getAspectMetadata().getAspectClass());
 		// 没有声明通知注解的方法 return null; 即普通方法会被过滤掉
