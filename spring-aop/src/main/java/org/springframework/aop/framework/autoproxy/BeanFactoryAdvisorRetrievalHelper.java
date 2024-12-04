@@ -90,7 +90,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 				}
 				else {
 					try {
-						// getBean不用多说了吧, 创建增强器bean  然后收集到增强器集合中 返回
+						// getBean不用多说了吧(createBean -> doCreateBean), 创建增强器bean  然后收集到增强器集合中 返回
 						advisors.add(this.beanFactory.getBean(name, Advisor.class));
 					}
 					catch (BeanCreationException ex) {
