@@ -71,7 +71,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 		if (advisorNames == null) {
 			// Do not initialize FactoryBeans here: We need to leave all regular beans
 			// uninitialized to let the auto-proxy creator apply to them!
-			// 通过类型(所有实现Advisor接口的类) 拿到所有beanNames数组 SPI机制
+			// 1.收集原生增强器 ：通过类型(所有实现Advisor接口的类) 拿到所有beanNames数组 SPI机制
 			advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 					this.beanFactory, Advisor.class, true, false);
 			this.cachedAdvisorBeanNames = advisorNames; //放入缓存
