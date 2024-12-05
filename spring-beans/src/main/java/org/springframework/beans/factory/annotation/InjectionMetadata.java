@@ -127,9 +127,9 @@ public class InjectionMetadata {
 			Set<InjectedElement> checkedElements = new LinkedHashSet<>((this.injectedElements.size() * 4 / 3) + 1);
 			for (InjectedElement element : this.injectedElements) {
 				Member member = element.getMember();
-				//不存在才添加 可能会出现重复添加的情况
+				// 不存在才添加 可能会出现重复添加的情况
 				if (!beanDefinition.isExternallyManagedConfigMember(member)) {
-					//添加到beanDefinition的ExternallyManagedConfigMember属性上
+					// 添加到beanDefinition的ExternallyManagedConfigMember属性上
 					beanDefinition.registerExternallyManagedConfigMember(member);
 					checkedElements.add(element);
 				}
@@ -140,13 +140,13 @@ public class InjectionMetadata {
 
 	public void inject(Object target, @Nullable String beanName, @Nullable PropertyValues pvs) throws Throwable {
 		Collection<InjectedElement> checkedElements = this.checkedElements;
-		//收集所有需要注入的信息
+		// 收集所有需要注入的信息
 		Collection<InjectedElement> elementsToIterate =
 				(checkedElements != null ? checkedElements : this.injectedElements);
 		if (!elementsToIterate.isEmpty()) {
 			// 迭代注入 逐个进行依赖注入
-			for (InjectedElement element : elementsToIterate) {
-				element.inject(target, beanName, pvs);
+			for (InjectedElement element : elementsToIterate) {  // 遍历获取每个需要被注入的元素（属性或方法）
+				element.inject(target, beanName, pvs); // 无论是属性或方法都封装为ResourceElement
 			}
 		}
 	}
