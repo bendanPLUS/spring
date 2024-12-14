@@ -145,7 +145,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	private Object doGetObjectFromFactoryBean(FactoryBean<?> factory, String beanName) throws BeanCreationException {
 		Object object;
 		try {
-			object = factory.getObject(); //从factoryBean接口获取Bean
+			object = factory.getObject(); // 从factoryBean接口获取Bean 示例: mybatis中 mapper的代理对象 MapperFactoryBean
 		}
 		catch (FactoryBeanNotInitializedException ex) {
 			throw new BeanCurrentlyInCreationException(beanName, ex.toString());
