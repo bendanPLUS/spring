@@ -57,6 +57,13 @@ import org.springframework.util.Assert;
  * @since 2.0
  * @see org.springframework.aop.aspectj.annotation.AspectJAdvisorFactory
  */
+/**
+ * 总结： （https://www.cnblogs.com/xfeiyun/p/17922723.html）
+ *  AnnotationAwareAspectJAutoProxyCreator其中核心实现postProcessBeforeInstantiation和postProcessAfterInitialization方法 是在AbstractAutoProxyCreator类中实现的
+ * 1.AnnotationAwareAspectJAutoProxyCreator实现了两个关键类SmartInstantiationAwareBeanPostProcessor和ProxyProcessorSupport。
+ * 2.通过实现postProcessBeforeInstantiation，在bean实例化前扫描@Aspect注解，解析到需要增强的Advisor，并缓存起来。
+ * 3.通过实现postProcessAfterInitialization，在bean初始化后，利用缓存的Advisor，创建代理类，完成bean的增强。
+ */
 @SuppressWarnings("serial")
 public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorAutoProxyCreator {
 
