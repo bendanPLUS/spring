@@ -114,7 +114,7 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 		// Build Advisors for all AspectJ aspects in the bean factory.
 		// 2.解析AspectJ切面封装的增强器 推荐使用 （bean factory中所有AspectJ切面） 即使用注解的 @Aspect  org.springframework.aop.aspectj.annotation.AbstractAspectJAdvisorFactory.ASPECTJ_ANNOTATION_CLASSES
 		if (this.aspectJAdvisorsBuilder != null) {
-			advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors());
+			advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors()); // 建造者模式
 		}
 		return advisors;
 	}
