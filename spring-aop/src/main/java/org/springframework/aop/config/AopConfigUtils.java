@@ -96,7 +96,7 @@ public abstract class AopConfigUtils {
 	@Nullable
 	public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
-		// 注: AnnotationAwareAspectJAutoProxyCreator.class 字节码类型被传入 指定了类型
+		// 注: AnnotationAwareAspectJAutoProxyCreator.class字节码类型被传入 指定了类型
 		return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);
 	}
 
