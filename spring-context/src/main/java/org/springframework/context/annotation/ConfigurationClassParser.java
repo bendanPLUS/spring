@@ -534,7 +534,7 @@ class ConfigurationClassParser {
 							 * 处理的时机:
 							 * {@link ConfigurationClassParser#parse(Set<>) this.deferredImportSelectorHandler.process()}
 							 */
-							this.deferredImportSelectorHandler.handle(configClass, deferredImportSelector);
+							this.deferredImportSelectorHandler.handle(configClass, deferredImportSelector); // 将选择器添加到deferredImportSelectorHandler实例中，预留到所有的配置类加载完成后统一处理自动化配置类
 						}
 						else { // 1.实现ImportSelector接口
 							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata()); // 1.处理的核心:调用执行重写的selectImports方法
@@ -542,7 +542,7 @@ class ConfigurationClassParser {
 							processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false); // 递归调用重写selector.selectImports方法返回的Bean
 						}
 					}
-					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) { // 3.候选的配置类是:ImportBeanDefinitionRegistrar类型
+					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) { // 3.候选的配置类是:ImportBeanDefinitionRegistrar类型  如果是实现了ImportBeanDefinitionRegistrar接口的candidate
 						// Candidate class is an ImportBeanDefinitionRegistrar ->
 						// delegate to it to register additional bean definitions
 						Class<?> candidateClass = candidate.loadClass();
@@ -550,8 +550,10 @@ class ConfigurationClassParser {
 								ParserStrategyUtils.instantiateClass(candidateClass, ImportBeanDefinitionRegistrar.class,
 										this.environment, this.resourceLoader, this.registry);
 
-						//会将所有的ImportBeanDefinitionRegistrar类型的全部收集add, 进行统一处理
+						// 会将所有的ImportBeanDefinitionRegistrar类型的全部收集add, 进行统一处理
 						/**
+						 *  放到当前configClass的importBeanDefinitionRegistrars中
+						 *  在ConfigurationClassPostProcessor处理configClass时会随之一起处理
 						 *  处理的时机:
 						 * {@link ConfigurationClassBeanDefinitionReader#loadBeanDefinitionsForConfigurationClass}
 						 * {@link ConfigurationClassBeanDefinitionReader#loadBeanDefinitionsFromRegistrars loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars())}
