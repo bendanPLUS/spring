@@ -161,7 +161,7 @@ class ConfigurationClassParser {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
 				if (bd instanceof AnnotatedBeanDefinition annotatedBeanDef) { // 注解的配置类
-					parse(annotatedBeanDef.getMetadata(), holder.getBeanName());
+					parse(annotatedBeanDef.getMetadata(), holder.getBeanName()); // 这里
 				}
 				else if (bd instanceof AbstractBeanDefinition abstractBeanDef && abstractBeanDef.hasBeanClass()) { // 手写注入的配置类
 					parse(abstractBeanDef.getBeanClass(), holder.getBeanName());
@@ -516,7 +516,7 @@ class ConfigurationClassParser {
 		}
 		else {
 			this.importStack.push(configClass);
-			try { // @Import注解分为四种类型：1.ImportSelector selector.selectImports  2.DeferredImportSelector 3.ImportBeanDefinitionRegistrar 4. 普通类/配置类
+			try { // @Import注解分为四种类型：1.ImportSelector selector.selectImports  2.执行时机延后的DeferredImportSelector 3.ImportBeanDefinitionRegistrar 4. 普通类/配置类
 				for (SourceClass candidate : importCandidates) {
 					if (candidate.isAssignable(ImportSelector.class)) { //分为两种: 1.实现ImportSelector接口 和 2. 延迟统一处理的DeferredImportSelector
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
@@ -536,12 +536,12 @@ class ConfigurationClassParser {
 							this.deferredImportSelectorHandler.handle(configClass, deferredImportSelector);
 						}
 						else { // 1.实现ImportSelector接口
-							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata()); //处理的核心:调用重写的selectImports方法
+							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata()); // 1.处理的核心:调用执行重写的selectImports方法
 							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter);
-							processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false); //递归调用重写selector.selectImports方法返回的Bean
+							processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false); // 递归调用重写selector.selectImports方法返回的Bean
 						}
 					}
-					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) { //候选的配置类是:ImportBeanDefinitionRegistrar类型
+					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) { // 3.候选的配置类是:ImportBeanDefinitionRegistrar类型
 						// Candidate class is an ImportBeanDefinitionRegistrar ->
 						// delegate to it to register additional bean definitions
 						Class<?> candidateClass = candidate.loadClass();
@@ -557,12 +557,12 @@ class ConfigurationClassParser {
 						 */
 						configClass.addImportBeanDefinitionRegistrar(registrar, currentSourceClass.getMetadata());
 					}
-					else {
+					else { // 4.导入的普通类
 						// Candidate class not an ImportSelector or ImportBeanDefinitionRegistrar ->
 						// process it as an @Configuration class
 						this.importStack.registerImport(
 								currentSourceClass.getMetadata(), candidate.getMetadata().getClassName());
-						processConfigurationClass(candidate.asConfigClass(configClass), exclusionFilter);
+						processConfigurationClass(candidate.asConfigClass(configClass), exclusionFilter); // 导入的普通类 递归执行 最后加入this.configurationClasses.put(configClass, configClass)中 待使用 -> this.reader.loadBeanDefinitions(configClasses);
 					}
 				}
 			}
