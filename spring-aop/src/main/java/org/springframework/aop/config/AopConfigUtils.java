@@ -137,7 +137,7 @@ public abstract class AopConfigUtils {
 		beanDefinition.setSource(source);
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE); // 添加属性 order 最高级
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-		// 注册一个 key:internalAutoProxyCreator value:AnnotationAwareAspectJAutoProxyCreator 的BeanDefinitionMap
+		// 注册一个 key:org.springframework.aop.config.internalAutoProxyCreator value:AnnotationAwareAspectJAutoProxyCreator 的BeanDefinitionMap
 		registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);
 		return beanDefinition;
 	}
