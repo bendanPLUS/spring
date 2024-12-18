@@ -562,6 +562,13 @@ class ConfigurationClassParser {
 						// process it as an @Configuration class
 						this.importStack.registerImport(
 								currentSourceClass.getMetadata(), candidate.getMetadata().getClassName());
+						/**
+						 * 如果Import的类型是普通类，打上importedBy标记， 后续org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader#loadBeanDefinitionsForConfigurationClass(org.springframework.context.annotation.ConfigurationClass, org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.TrackedConditionEvaluator)时会用到这个标记 则将其当作带有@Configuration的类一样处理
+						 * {@link ConfigurationClassBeanDefinitionReader#loadBeanDefinitionsForConfigurationClass(ConfigurationClass, ConfigurationClassBeanDefinitionReader.TrackedConditionEvaluator)方法里，if (configClass.isImported()) {} 会判断是否带有importedBy标记 }
+						 * 将candidate构造为ConfigurationClass，标注为importedBy，意味着它是通过被@Import进来的(candidate.asConfigClass(configClass)中处理的)
+						 * 后面处理会用到这个判断将这个普通类注册进DefaultListableBeanFactory
+						 * 将 candidate 转换为 ConfigurationClass 并标记this.importedBy.add(configClass);
+						 */
 						processConfigurationClass(candidate.asConfigClass(configClass), exclusionFilter); // 导入的普通类 递归执行 最后加入this.configurationClasses.put(configClass, configClass)中 待使用 -> this.reader.loadBeanDefinitions(configClasses);
 					}
 				}
