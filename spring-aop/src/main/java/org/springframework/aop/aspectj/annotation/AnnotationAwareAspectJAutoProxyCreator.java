@@ -52,6 +52,8 @@ import org.springframework.util.Assert;
  *  3.SmartInstantiationAwareBeanPostProcessor
  *  4.AopInfrastructureBean
  *
+ *  它重写的findCandidateAdvisors()方法，使用时 需调用此方法
+ *
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 2.0
@@ -61,7 +63,7 @@ import org.springframework.util.Assert;
  * 总结： （https://www.cnblogs.com/xfeiyun/p/17922723.html）
  *  AnnotationAwareAspectJAutoProxyCreator其中核心实现postProcessBeforeInstantiation和postProcessAfterInitialization方法 是在AbstractAutoProxyCreator类中实现的
  * 1.AnnotationAwareAspectJAutoProxyCreator实现了两个关键类SmartInstantiationAwareBeanPostProcessor和ProxyProcessorSupport
- * 2.通过实现postProcessBeforeInstantiation，在bean实例化前扫描@Aspect注解，解析到需要增强的Advisor，并缓存起来。
+ * 2.通过实现postP在bean实例化前扫描@Aspect注解，解析到需要增强的Advisor，并缓存起来rocessBeforeInstantiation，。
  * 3.通过实现postProcessAfterInitialization，在bean初始化后，利用缓存的Advisor，创建代理类，完成bean的增强。
  */
 @SuppressWarnings("serial")
