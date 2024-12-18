@@ -529,6 +529,7 @@ class ConfigurationClassParser {
 						}
 						if (selector instanceof DeferredImportSelector deferredImportSelector) { // 2.Deferred执行时机延后
 							/**
+							 * 判断引用选择器是否是DeferredImportSelector接口的实例？如果是则应用选择器将会在所有的配置类都加载完毕后加载
 							 * 先加入(收集)  最后统一处理
 							 * 处理的时机:
 							 * {@link ConfigurationClassParser#parse(Set<>) this.deferredImportSelectorHandler.process()}
