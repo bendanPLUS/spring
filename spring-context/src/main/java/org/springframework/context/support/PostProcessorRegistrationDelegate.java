@@ -119,7 +119,7 @@ final class PostProcessorRegistrationDelegate {
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) { // 类型匹配 是否实现PriorityOrdered接口? 1.先处理最高优先级的BeanDefinitionRegistryPostProcessor
 					// 创建成Bean 以前是BeanDefinition 通过getBean创建成Bean
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
-					processedBeans.add(ppName);
+					processedBeans.add(ppName); // 将所有执行过的后置处理器都保存起来
 				}
 			}
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
