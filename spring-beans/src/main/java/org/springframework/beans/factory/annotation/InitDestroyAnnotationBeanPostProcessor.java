@@ -112,8 +112,9 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 	 * class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBeanPostProcessor
 	 * setInitAnnotationType(PostConstruct.class);
 	 * setDestroyAnnotationType(PreDestroy.class);
-	 * {@link org.springframework.context.annotation.CommonAnnotationBeanPostProcessor#CommonAnnotationBeanPostProcessor()}
+	 * {@link org.springframework.context.annotation.CommonAnnotationBeanPostProcessor#CommonAnnotationBeanPostProcessor()} // 这里
 	 * InitDestroyAnnotationBeanPostProcessor的属性，initAnnotationType和destroyAnnotationType的设置是在 子类(CommonAnnotationBeanPostProcessor)的构造函数设置完成的
+	 * setInitAnnotationType(PostConstruct.class);
 	 */
 	@Nullable
 	private Class<? extends Annotation> initAnnotationType;
