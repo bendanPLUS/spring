@@ -1115,7 +1115,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	protected void applyMergedBeanDefinitionPostProcessors(RootBeanDefinition mbd, Class<?> beanType, String beanName) {
 		for (MergedBeanDefinitionPostProcessor processor : getBeanPostProcessorCache().mergedDefinition) {
-			// 此处两个比较重要的后置处理器: AutowiredAnnotationBeanPostProcessor CommonAnnotationBeanPostProcessor
+			// 此处两个比较重要的后置处理器: AutowiredAnnotationBeanPostProcessor CommonAnnotationBeanPostProcessor InitDestroyAnnotationBeanPostProcessor的postProcessMergedBeanDefinition方法会扫描收集@PostConstruct注解的方法
 			processor.postProcessMergedBeanDefinition(mbd, beanType, beanName);
 		}
 	}
