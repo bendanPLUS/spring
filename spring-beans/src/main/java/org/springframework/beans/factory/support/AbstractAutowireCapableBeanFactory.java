@@ -569,7 +569,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #instantiateUsingFactoryMethod
 	 * @see #autowireConstructor
 	 */
-	/* 核心三件事: 1.createBeanInstance 2.populateBean 3.initializeBean */
+	/* 核心三件事: 1.createBeanInstance实例化 2.populateBean属性赋值 3.initializeBean初始化 */
 	protected Object doCreateBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
 			throws BeanCreationException {
 
