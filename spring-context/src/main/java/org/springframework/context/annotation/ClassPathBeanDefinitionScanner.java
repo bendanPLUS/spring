@@ -287,7 +287,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 					/* 从原始bean定义的元数据中获取那些通用的注解信息：@Lazy,@DependsOn,@Role,@Description,然后设置AnnotatedBeanDefinition实例相应的属性 */
 					AnnotationConfigUtils.processCommonDefinitionAnnotations(annotatedBeanDefinition);
 				}
-				if (checkCandidate(beanName, candidate)) { //检测下beanDefinitionMap里是否存在? 不存在就注册registerBeanDefinition(definitionHolder, this.registry);
+				if (checkCandidate(beanName, candidate)) { // 检测下beanDefinitionMap里是否存在? 不存在就注册registerBeanDefinition(definitionHolder, this.registry);
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName); // 设置完BeanDefinition信息
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry); // AOP属性相关的属性
