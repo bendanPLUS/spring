@@ -210,22 +210,23 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 		// Quick check for existing instance without full singleton lock
-		//一级缓存中是否存在
+		// 一级缓存中是否存在
 		Object singletonObject = this.singletonObjects.get(beanName);
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
-			//二级级缓存中是否存在?
+			// 二级级缓存中是否存在?
 			singletonObject = this.earlySingletonObjects.get(beanName);
 			if (singletonObject == null && allowEarlyReference) {
 				synchronized (this.singletonObjects) {
 					// Consistent creation of early reference within full singleton lock
-					//一级缓存中是否存在
+					// 一级缓存中是否存在
 					singletonObject = this.singletonObjects.get(beanName);
 					if (singletonObject == null) {
 						singletonObject = this.earlySingletonObjects.get(beanName);
 						if (singletonObject == null) {
+							// 从三级缓存里取
 							ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 							if (singletonFactory != null) {
-								//走到这里说明:二级缓存中没有&三级缓存中存在(当前bean还没进行依赖注入,是一个不完整的bean)
+								// 走到这里说明:二级缓存中没有&三级缓存中存在(当前bean还没进行依赖注入,是一个不完整的bean)
 								/**
 								 *  在属性赋值和依赖注入之前,提前暴露对象的引用 供其他对象使用 (放入到三级缓存, 此时二级缓存里还没有)
 								 *  三级缓存加入的时机:{@link DefaultSingletonBeanRegistry#addSingletonFactory(String, ObjectFactory)}
@@ -233,7 +234,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 								 * {@link AbstractAutowireCapableBeanFactory#getEarlyBeanReference(String, RootBeanDefinition, Object)}
 								 */
 								singletonObject = singletonFactory.getObject(); // 触发切入点(getEarlyBeanReference方法) 延迟的拿对象 for AOP 拿到代理对象放入二级缓存
-								//将bean对象存放到二级缓存中且从三级缓存中删除
+								// 将bean对象存放到二级缓存中且从三级缓存中删除
 								this.earlySingletonObjects.put(beanName, singletonObject);
 								this.singletonFactories.remove(beanName);
 							}
