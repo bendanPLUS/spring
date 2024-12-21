@@ -278,7 +278,7 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 		do {
 			final List<LifecycleMethod> currInitMethods = new ArrayList<>();
 			final List<LifecycleMethod> currDestroyMethods = new ArrayList<>();
-			//方法 上标注注解的情况
+			// 遍历currentClass 中所有的方法
 			ReflectionUtils.doWithLocalMethods(currentClass, method -> {
 				// setInitAnnotationType(PostConstruct.class);  处理@PostConstruct注解 注：在子类中设置的 org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.CommonAnnotationBeanPostProcessor
 				if (this.initAnnotationType != null && method.isAnnotationPresent(this.initAnnotationType)) {
@@ -298,7 +298,7 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 
 			initMethods.addAll(0, currInitMethods);
 			destroyMethods.addAll(currDestroyMethods);
-			currentClass = currentClass.getSuperclass();
+			currentClass = currentClass.getSuperclass(); // 递归执行 再处理子类
 		}
 		while (currentClass != null && currentClass != Object.class);
 

@@ -340,6 +340,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		do {
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
 
+			// field字段
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
 				// 收集JSR-250规范的字段?属性?field?
 				if (ejbClass != null && field.isAnnotationPresent(ejbClass)) {
@@ -348,7 +349,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 					}
 					currElements.add(new EjbRefElement(field, field, null));
 				}
-				//收集@Resource注解标注的属性
+				// 收集@Resource注解标注的属性
 				else if (field.isAnnotationPresent(Resource.class)) {
 					if (Modifier.isStatic(field.getModifiers())) {
 						throw new IllegalStateException("@Resource annotation is not supported on static fields");
@@ -359,6 +360,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 				}
 			});
 
+			// method方法
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
@@ -391,7 +393,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 				}
 			});
 
-			elements.addAll(0, currElements);
+			elements.addAll(0, currElements); // 收集到的@Resource等注解包装成ResourceElement 放入List<InjectionMetadata.InjectedElement> elements集合
 			targetClass = targetClass.getSuperclass();
 		}
 		while (targetClass != null && targetClass != Object.class);
