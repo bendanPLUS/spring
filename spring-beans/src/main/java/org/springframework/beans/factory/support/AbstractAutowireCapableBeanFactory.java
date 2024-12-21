@@ -582,7 +582,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 真正的bean对象创建动作:1.解析构造方法 2.构造方法参数注入 3.反射调用构造方法创建对象实例
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
-		// 得到真实的bean对象引用
+		// 包装类Wrapper  得到真实的bean对象 bean类型
 		Object bean = instanceWrapper.getWrappedInstance();
 		Class<?> beanType = instanceWrapper.getWrappedClass();
 		if (beanType != NullBean.class) {
@@ -1217,11 +1217,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 		if (resolved) {
 			if (autowireNecessary) {
-				//指定的or进行构造函数的匹配
+				// 指定的or进行构造函数的匹配
 				return autowireConstructor(beanName, mbd, null, null);
 			}
 			else {
-				//无参的构造函数
+				// 无参的构造函数
 				return instantiateBean(beanName, mbd);
 			}
 		}
