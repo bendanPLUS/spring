@@ -617,7 +617,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 			/* 单例bean 在createBeanInstance后 populateBean之前 加入三级缓存Map<String, ObjectFactory<?>> singletonFactories中*/
 			// 扩张点: 在属性赋值和依赖注入之前,提前暴露对象的引用 供其他对象使用 (放入到三级缓存(singletonFactories中), 此时二级缓存里还没有)
-			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
+			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean)); // 放入三级缓存，当从三级缓存中获取singletonFactory，并调用getObject方法时，触发执行getEarlyBeanReference(beanName, mbd, bean)方法
 		}
 
 		// Initialize the bean instance.
