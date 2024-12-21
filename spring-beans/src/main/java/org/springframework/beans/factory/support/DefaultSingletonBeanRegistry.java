@@ -276,7 +276,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
-					singletonObject = singletonFactory.getObject(); //函数式接口 -> 调用createBean(beanName, mbd, args);
+					singletonObject = singletonFactory.getObject(); // 函数式接口 -> 调用createBean(beanName, mbd, args);
 					newSingleton = true;
 				} catch (IllegalStateException ex) {
 					// Has the singleton object implicitly appeared in the meantime ->
@@ -296,10 +296,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
-					//移除正在创建的标记
+					// 移除正在创建的标记
 					afterSingletonCreation(beanName);
 				}
-				//单例模式创建的Bean 加入一级缓存
+				// 单例模式创建的Bean 加入一级缓存
 				if (newSingleton) {
 					addSingleton(beanName, singletonObject);
 				}
