@@ -117,7 +117,7 @@ class ComponentScanAnnotationParser {
 			basePackages.add(ClassUtils.getPackageName(clazz));
 		}
 		if (basePackages.isEmpty()) {
-			// 约定大于配置 如果为空 默认当前包下目录下 这就是为什么启动类要写在最外面的原因, 如果basePackages为空,则取启动类所在包的路径
+			// 约定大于配置 如果为空 默认当前包下目录下 这就是为什么启动类要写在最外面的原因, 如果basePackages为空,则取启动类所在包的路径(通过@AutoConfigurationPackage注解进行设置的)
 			basePackages.add(ClassUtils.getPackageName(declaringClass));
 		}
 
