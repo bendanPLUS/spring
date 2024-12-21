@@ -286,7 +286,7 @@ class ConfigurationClassParser {
 			throws IOException {
 		/* 1.处理 @Component 注解 因为是@Configration注解标注的 所以必定是@Component */
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
-			// Recursively process any member (nested) classes first
+			// Recursively process any member (nested) classes first 递归处理 启动类 里面的内部类(MemberClasses)
 			processMemberClasses(configClass, sourceClass, filter);
 		}
 
