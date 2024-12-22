@@ -1193,7 +1193,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					"Bean class isn't public, and non-public access not allowed: " + beanClass.getName());
 		}
 
-		//Supplier 可以完成bean对象的构建过程
+		// Supplier 可以完成bean对象的构建过程
 		Supplier<?> instanceSupplier = mbd.getInstanceSupplier();
 		if (instanceSupplier != null) {
 			return obtainFromSupplier(instanceSupplier, beanName, mbd);
@@ -1350,7 +1350,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @return a BeanWrapper for the new instance
 	 */
 	protected BeanWrapper instantiateBean(String beanName, RootBeanDefinition mbd) {
-		try {
+		try { // 通过反射实例化对象
 			Object beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, this);
 			BeanWrapper bw = new BeanWrapperImpl(beanInstance);
 			initBeanWrapper(bw);
