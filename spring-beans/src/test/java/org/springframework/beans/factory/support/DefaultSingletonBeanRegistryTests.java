@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 04.07.2006
  */
 public class DefaultSingletonBeanRegistryTests {
-
+	/* 单例 getBean为解决循环依赖 三级缓存的相关测试 */
 	@Test
 	public void testSingletons() {
 		DefaultSingletonBeanRegistry beanRegistry = new DefaultSingletonBeanRegistry();

@@ -300,7 +300,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					// 移除正在创建的标记
 					afterSingletonCreation(beanName);
 				}
-				// 单例模式创建的Bean 加入一级缓存
+				// 单例模式创建的Bean完成后 加入一级缓存
 				if (newSingleton) {
 					addSingleton(beanName, singletonObject);
 				}
