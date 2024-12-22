@@ -593,7 +593,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
-					/* 第三个扩张点: 对注解的收集工作(字段+方法) */
+					/* 第三个扩张点: 对注解的收集工作(字段+方法) 在属性赋值依赖注入前收集好注解标注的属性和方法 示例： InitDestroyAnnotationBeanPostProcessor(@PostConstruct) AutowiredAnnotationBeanPostProcessor(@Autowired) CommonAnnotationBeanPostProcessor(@Resource)*/
 					// 属性赋值前, 收集bean对象所对应Clas的对注解信息, 用(实现MergedBeanDefinitionPostProcessor接口)后置处理器进行分工处理
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
