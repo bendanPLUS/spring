@@ -68,7 +68,7 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 			}
 			// 接口实现类的选择JDK
 			if (targetClass.isInterface() || Proxy.isProxyClass(targetClass) || ClassUtils.isLambdaClass(targetClass)) {
-				return new JdkDynamicAopProxy(config);
+				return new JdkDynamicAopProxy(config);  // 代理对象是一个接口且没有实现类 mybatis里面的Mapper 因为只有接口没有实现类 所有会使用JDK的动态代理
 			}
 			// 其他的选择 CGLIB
 			return new ObjenesisCglibAopProxy(config);
