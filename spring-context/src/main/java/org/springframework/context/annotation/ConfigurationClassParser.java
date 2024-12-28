@@ -331,7 +331,7 @@ class ConfigurationClassParser {
 			}
 		}
 
-		/* 4.Process any @Import annotations 处理@Import注解*/
+		/* 4.Process any @Import annotations 处理@Import注解 四种方式:1.ImportSelector2.DeferredImportSelector3.ImportBeanDefinitionRegistrar4.@Import */
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
 		/* 5.Process any @ImportResource annotations ,当需要导入XML文件时,可借助@ImportResource注解 */
@@ -538,7 +538,7 @@ class ConfigurationClassParser {
 						}
 						else { // 1.实现ImportSelector接口
 							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata()); // 1.处理的核心:调用执行重写的selectImports方法
-							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter);
+							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter); // 递归 变成普通的Import
 							processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false); // 递归调用重写selector.selectImports方法返回的Bean
 						}
 					}
@@ -572,7 +572,7 @@ class ConfigurationClassParser {
 						 * 后面处理会用到这个判断将这个普通类注册进DefaultListableBeanFactory
 						 * 将 candidate 转换为 ConfigurationClass 并标记this.importedBy.add(configClass);
 						 */
-						processConfigurationClass(candidate.asConfigClass(configClass), exclusionFilter); // 导入的普通类 递归执行 最后加入this.configurationClasses.put(configClass, configClass)中 待使用 -> this.reader.loadBeanDefinitions(configClasses);
+						processConfigurationClass(candidate.asConfigClass(configClass), exclusionFilter); // 导入的普通类 递归执行 最后变成configClass加入this.configurationClasses.put(configClass, configClass)中 待使用 -> this.reader.loadBeanDefinitions(configClasses);
 					}
 				}
 			}
