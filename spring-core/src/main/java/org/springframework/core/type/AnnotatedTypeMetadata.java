@@ -31,7 +31,7 @@ import org.springframework.util.MultiValueMap;
 /**
  * Defines access to the annotations of a specific type ({@link AnnotationMetadata class}
  * or {@link MethodMetadata method}), in a form that does not necessarily require the
- * class-loading.
+ * class-loading. Spring4.0新增的这个接口提供了对注解统一的、便捷的访问方式
  *
  * @author Juergen Hoeller
  * @author Mark Fisher
@@ -51,7 +51,7 @@ public interface AnnotatedTypeMetadata {
 	 * @return merged annotations based on the direct annotations
 	 * @since 5.2
 	 */
-	MergedAnnotations getAnnotations();
+	MergedAnnotations getAnnotations(); // 获取所有的注解
 
 	/**
 	 * Determine whether the underlying element has an annotation or meta-annotation
@@ -60,7 +60,7 @@ public interface AnnotatedTypeMetadata {
 	 * {@link #getAnnotationAttributes} will return a non-null Map.
 	 * @param annotationName the fully qualified class name of the annotation
 	 * type to look for
-	 * @return whether a matching annotation is defined
+	 * @return whether a matching annotation is defined 是否存在给定注解？
 	 */
 	default boolean isAnnotated(String annotationName) {
 		return getAnnotations().isPresent(annotationName);
@@ -74,7 +74,7 @@ public interface AnnotatedTypeMetadata {
 	 * type to look for
 	 * @return a Map of attributes, with the attribute name as key (e.g. "value")
 	 * and the defined attribute value as Map value. This return value will be
-	 * {@code null} if no matching annotation is defined.
+	 * {@code null} if no matching annotation is defined. 获取给定注解的所有属性值
 	 */
 	@Nullable
 	default Map<String, Object> getAnnotationAttributes(String annotationName) {

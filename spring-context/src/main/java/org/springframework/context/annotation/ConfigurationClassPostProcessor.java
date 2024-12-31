@@ -285,7 +285,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 					"postProcessBeanFactory already called on this post-processor against " + registry);
 		}
 		this.registriesPostProcessed.add(registryId);
-		// 解析配置类
+		//  处理 Config BeanDefinitions
 		processConfigBeanDefinitions(registry);
 	}
 
@@ -424,7 +424,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			parser.parse(candidates);
 			parser.validate();
 
-			Set<ConfigurationClass> configClasses = new LinkedHashSet<>(parser.getConfigurationClasses());
+			Set<ConfigurationClass> configClasses = new LinkedHashSet<>(parser.getConfigurationClasses()); // 解析器出来的configurationClasses
 			configClasses.removeAll(alreadyParsed);
 
 			// Read the model and create bean definitions based on its content  ConfigurationClassBeanDefinitionReader  读取配置类的组件

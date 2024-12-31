@@ -59,7 +59,7 @@ final class SimpleAnnotationMetadata implements AnnotationMetadata {
 	private final MergedAnnotations annotations;
 
 	@Nullable
-	private Set<String> annotationTypes;
+	private Set<String> annotationTypes; // 类或接口上的注解类型的名称
 
 
 	SimpleAnnotationMetadata(String className, int access, @Nullable String enclosingClassName,

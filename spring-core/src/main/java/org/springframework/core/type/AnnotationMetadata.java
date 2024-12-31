@@ -43,7 +43,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	/**
 	 * Get the fully qualified class names of all annotation types that
 	 * are <em>present</em> on the underlying class.
-	 * @return the annotation type names
+	 * @return the annotation type names 获取类上所有注解(全限定名)
 	 */
 	default Set<String> getAnnotationTypes() {
 		return getAnnotations().stream()
@@ -56,7 +56,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * Get the fully qualified class names of all meta-annotation types that
 	 * are <em>present</em> on the given annotation type on the underlying class.
 	 * @param annotationName the fully qualified class name of the meta-annotation
-	 * type to look for
+	 * type to look for  获取指定注解的元注解(全限定名) 例如@Configuration的MetaAnnotation就是@Component和@Indexed
 	 * @return the meta-annotation type names, or an empty set if none found
 	 */
 	default Set<String> getMetaAnnotationTypes(String annotationName) {
@@ -73,7 +73,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * Determine whether an annotation of the given type is <em>present</em> on
 	 * the underlying class.
 	 * @param annotationName the fully qualified class name of the annotation
-	 * type to look for
+	 * type to look for 类上是否直接存在指定注解
 	 * @return {@code true} if a matching annotation is present
 	 */
 	default boolean hasAnnotation(String annotationName) {
@@ -84,7 +84,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * Determine whether the underlying class has an annotation that is itself
 	 * annotated with the meta-annotation of the given type.
 	 * @param metaAnnotationName the fully qualified class name of the
-	 * meta-annotation type to look for
+	 * meta-annotation type to look for 类上是否存在指定元注解 例如@Component就是@Configuration的MetaAnnotatio
 	 * @return {@code true} if a matching meta-annotation is present
 	 */
 	default boolean hasMetaAnnotation(String metaAnnotationName) {
@@ -96,7 +96,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * Determine whether the underlying class has any methods that are
 	 * annotated (or meta-annotated) with the given annotation type.
 	 * @param annotationName the fully qualified class name of the annotation
-	 * type to look for
+	 * type to look for 是否存在指定注解的方法
 	 */
 	default boolean hasAnnotatedMethods(String annotationName) {
 		return !getAnnotatedMethods(annotationName).isEmpty();
@@ -111,7 +111,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * type to look for
 	 * @return a set of {@link MethodMetadata} for methods that have a matching
 	 * annotation. The return value will be an empty set if no methods match
-	 * the annotation type.
+	 * the annotation type. 获取指定注解的方法
 	 */
 	Set<MethodMetadata> getAnnotatedMethods(String annotationName);
 
@@ -119,7 +119,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * Retrieve the method metadata for all user-declared methods on the
 	 * underlying class, preserving declaration order as far as possible.
 	 * @return a set of {@link MethodMetadata}
-	 * @since 6.0
+	 * @since 6.0 获取本类中所有的方法，包括public、protected、private
 	 */
 	Set<MethodMetadata> getDeclaredMethods();
 

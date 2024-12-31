@@ -124,7 +124,7 @@ class ConfigurationClassParser {
 
 	private final ConditionEvaluator conditionEvaluator;
 
-	private final Map<ConfigurationClass, ConfigurationClass> configurationClasses = new LinkedHashMap<>();
+	private final Map<ConfigurationClass, ConfigurationClass> configurationClasses = new LinkedHashMap<>(); // 解析器解析出来的configurationClasses Map
 
 	private final Map<String, ConfigurationClass> knownSuperclasses = new HashMap<>();
 

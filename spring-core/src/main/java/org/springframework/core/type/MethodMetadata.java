@@ -34,18 +34,18 @@ public interface MethodMetadata extends AnnotatedTypeMetadata {
 	/**
 	 * Get the name of the underlying method.
 	 */
-	String getMethodName();
+	String getMethodName(); // 获取方法名
 
 	/**
 	 * Get the fully-qualified name of the class that declares the underlying method.
 	 */
-	String getDeclaringClassName();
+	String getDeclaringClassName(); // 声明方法所在的类名
 
 	/**
 	 * Get the fully-qualified name of the underlying method's declared return type.
 	 * @since 4.2
 	 */
-	String getReturnTypeName();
+	String getReturnTypeName(); // 获取方法返回值类型名
 
 	/**
 	 * Determine whether the underlying method is effectively abstract:
@@ -53,22 +53,22 @@ public interface MethodMetadata extends AnnotatedTypeMetadata {
 	 * non-default method in an interface.
 	 * @since 4.2
 	 */
-	boolean isAbstract();
+	boolean isAbstract(); // 是不是抽象方法
 
 	/**
 	 * Determine whether the underlying method is declared as 'static'.
 	 */
-	boolean isStatic();
+	boolean isStatic(); // 是不是静态方法
 
 	/**
 	 * Determine whether the underlying method is marked as 'final'.
 	 */
-	boolean isFinal();
+	boolean isFinal(); // 是不是final方法
 
 	/**
 	 * Determine whether the underlying method is overridable,
 	 * i.e. not marked as static, final, or private.
 	 */
-	boolean isOverridable();
+	boolean isOverridable(); // 方法是否可以被重写
 
 }
